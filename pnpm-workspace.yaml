@@ -8,3 +8,6 @@ ignoredBuiltDependencies:
   - cypress
   - sharp
   - unrs-resolver
+
+overrides:
+  mongodb: link:../.local/share/pnpm/global/5/node_modules/mongodb
