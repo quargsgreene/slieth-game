@@ -15,6 +15,7 @@ services:
       - db_name
       - db_collection_name
       - hostname
+      - db_uri
   mongodb:
       container_name: slieth_db
       image: mongo:latest
@@ -32,6 +33,7 @@ services:
         DB_NAME_FILE: ./run/secrets/db_name
         DB_COLLECTION_NAME_FILE: ./run/secrets/db_collection_name
         DB_HOSTNAME_FILE: ./run/secrets/hostname
+        MONGO_URI: ./run/secrets/db_uri
       secrets:
         - db_init_username
         - db_init_password
@@ -40,6 +42,7 @@ services:
         - db_name
         - db_collection_name
         - hostname
+        - db_uri
 volumes: 
   slieth_data:
 secrets:
@@ -57,3 +60,5 @@ secrets:
      file: ./run/secrets/db_collection_name.txt
    hostname:
      file: ./run/secrets/hostname.txt
+   db_uri:
+     file: ./run/secrets/db_uri.txt
