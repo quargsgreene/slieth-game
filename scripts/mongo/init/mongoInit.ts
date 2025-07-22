@@ -1,4 +1,4 @@
-function getEnvVariable(envVar, defaultValue) {
+/*function getEnvVariable(envVar, defaultValue) {
 	let command = run("sh", "-c". `printenv --null ${ envVar } >/tmp/${ envVar }.txt`);
 	if (command !=0){
 		return defaultValue;
@@ -24,3 +24,4 @@ db.createUser({
 
 });
 db.createCollection(dbCollectionName);
+*/
