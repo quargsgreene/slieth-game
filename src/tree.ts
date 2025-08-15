@@ -68,7 +68,7 @@ function heapify()
 
 
 
-function getNodes()
+function getNodes(this:GameTree)
 {
 
 	return this.nodes
@@ -76,14 +76,14 @@ function getNodes()
 }
 
 
-function getId()
+function getId(this:GameTree)
 {
 
 	return this.game_id
 
 }
 
-function getRoot()
+function getRoot(this:GameTree)
 {
 
 	return this.root
@@ -91,7 +91,7 @@ function getRoot()
 }
 
 
-function isActive()
+function isActive(this:GameTree)
 {
 
 	return this.active

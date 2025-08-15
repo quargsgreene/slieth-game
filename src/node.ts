@@ -14,7 +14,7 @@ export interface Node
 
 
 
-function getNodeId()
+function getNodeId(this:Node)
 {
 
 	return this.id
@@ -22,7 +22,7 @@ function getNodeId()
 }
 
 
-function getNodeText()
+function getNodeText(this:Node)
 {
 
 	return this.text
@@ -30,14 +30,14 @@ function getNodeText()
 }
 
 
-function getImages()
+function getImages(this:Node)
 {
 
 	return this.images
 
 }
 
-function getAudio()
+function getAudio(this:Node)
 {
 
 	return this.audio
@@ -45,7 +45,7 @@ function getAudio()
 }
 
 
-function getPuzzles()
+function getPuzzles(this:Node)
 {
 
 	return this.puzzles
@@ -53,7 +53,7 @@ function getPuzzles()
 }
 
 
-function getApiData()
+function getApiData(this:Node)
 {
 
 	return this.apiData
@@ -61,7 +61,7 @@ function getApiData()
 }
 
 
-function getValue()
+function getValue(this:Node)
 
 {
 
@@ -71,7 +71,7 @@ function getValue()
 }
 
 
-function isActive()
+function isActive(this:Node)
 
 {
 
@@ -80,13 +80,13 @@ function isActive()
 }
 
 
-function setId(newId:number)
+function setId(this:Node, newId:number)
 {
 	this.id = newId
 
 }
 
-function setText(newText:string[])
+function setText(this:Node, newText:string[])
 {
 
 	this.text = newText
@@ -94,7 +94,7 @@ function setText(newText:string[])
 }
 
 
-function setImages(newImages:string[])
+function setImages(this:Node, newImages:string[])
 {
 
 	this.images = newImages
@@ -102,7 +102,7 @@ function setImages(newImages:string[])
 }
 
 
-function setAudio(newAudio:string[])
+function setAudio(this:Node, newAudio:string[])
 {
 
 	this.audio = newAudio
@@ -110,14 +110,14 @@ function setAudio(newAudio:string[])
 }
 
 
-function setPuzzles(newPuzzles:string[])
+function setPuzzles(this:Node, newPuzzles:string[])
 {
 	this.puzzles = newPuzzles
 
 }
 
 
-function setApiData(newApiData:[])
+function setApiData(this:Node, newApiData:[])
 
 {
 
@@ -126,7 +126,7 @@ function setApiData(newApiData:[])
 }
 
 
-function setValue(newValue:number)
+function setValue(this:Node, newValue:number)
 
 {
 
@@ -135,7 +135,7 @@ function setValue(newValue:number)
 }
 
 
-function toggleActive(activityState:boolean)
+function toggleActive(this:Node, activityState:boolean)
 
 {
 
