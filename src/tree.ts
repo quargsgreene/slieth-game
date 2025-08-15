@@ -1,4 +1,4 @@
-import {Node}
+import {Node} from 'node'
 
 export type Routes = '/' | 'active' | 'inactive'
 
