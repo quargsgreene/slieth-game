@@ -1,4 +1,4 @@
-import {Node} from './node.ts'
+import type {Node} from './node.ts'
 
 export type Routes = '/' | 'active' | 'inactive'
 
