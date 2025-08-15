@@ -1,7 +1,7 @@
 export interface Node
 {
 
-	id:string,
+	id:number,
 	text: string[],
 	images: string[],
 	audio: string[],
@@ -78,3 +78,72 @@ function isActive()
 	return this.active
 
 }
+
+
+function setId(newId:number)
+{
+	this.id = newId
+
+}
+
+function setText(newText:string[])
+{
+
+	this.text = newText
+
+}
+
+
+function setImages(newImages:string[])
+{
+
+	this.images = newImages
+
+}
+
+
+function setAudio(newAudio:string[])
+{
+
+	this.audio = newAudio
+
+}
+
+
+function setPuzzles(newPuzzles:string[])
+{
+	this.puzzles = newPuzzles
+
+}
+
+
+function setApiData(newApiData:[])
+
+{
+
+	this.apiData = newApiData
+
+}
+
+
+function setValue(newValue:number)
+
+{
+
+	this.value = newValue
+
+}
+
+
+function toggleActive(activityState:boolean)
+
+{
+
+
+	this.active = activityState
+
+
+}
+
+
+
