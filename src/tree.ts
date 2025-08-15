@@ -31,7 +31,7 @@ export enum LocalStorageKey
 
 //TODO: insert, delete, heapify, extract min
 
-function insert(node:Node)
+function insertNode(node:Node)
 {
 
 	//
@@ -39,7 +39,7 @@ function insert(node:Node)
 }
 
 
-function delete(node:Node)
+function deleteNode(node:Node)
 
 {
 
