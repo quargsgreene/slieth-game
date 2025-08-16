@@ -1,4 +1,4 @@
-import {Node} from './node.ts'
+import {NodeOptions, GameNode} from './node'
 
 export type Routes = '/' | 'active' | 'inactive'
 
@@ -10,7 +10,14 @@ export interface GameState
 {
 	gameTree:GameTreeType
 }
+export interface GameAttributes
 
+{
+	game_id:number;
+	nodes:GameNode[];
+	active:boolean;
+	root:GameNode;
+}
 
 export enum LocalStorageKey
 {
@@ -20,150 +27,149 @@ export enum LocalStorageKey
 export class GameTree
 {
 
-	constructor(opts:{game_id:string, nodes:Node[], active:boolean, root:Node}){
-	
-		opts.game_id = game_id
-		opts.nodes = nodes
-		opts.active = active
-		opts.root = root
-	}
+	constructor(opts:{game_id:number, nodes:GameNode[], active:boolean, root:GameNode}){
+			this.game_id = opts.game_id;
+			this.nodes = opts.nodes;
+			this.active = opts.active;
+			this.root = opts.root;
+			}
 
-	upHeap(this:GameTree, node:Node):void
+	upHeap(node:GameNode):void
 	{
 
 
-		let nodes: Node[] = this.nodes
-		let currentNodeIndex: number = nodes.indexOf(node)
-		let currentParent: Node = nodes[Math.floor((currentNodeIndex - 1)/2)]
-		let currentNode: Node = node
-		let currentParentIndex: number = Math.floor((currentNodeIndex - 1)/2)
+		let nodes: GameNode[] = this.nodes;
+		let currentNodeIndex: number = nodes.indexOf(node);
+		let currentParent: GameNode = nodes[Math.floor((currentNodeIndex - 1)/2)];
+		let currentNode: GameNode = node;
+		let currentParentIndex: number = Math.floor((currentNodeIndex - 1)/2);
 
 		while(node.value < currentParent.value && currentNodeIndex > 0)
 		{
-			let temp:Node = currentNode
-			nodes[currentNodeIndex] = currentParent
-			nodes[currentParentIndex] = temp
-			currentNodeIndex = currentParentIndex
-			currentNode = nodes[currentNodeIndex]
-			currentParentIndex = Math.floor((currentParentIndex - 1)/2)
-			currentParent = nodes[currentParentIndex]
+			let temp:GameNode = currentNode;
+			nodes[currentNodeIndex] = currentParent;
+			nodes[currentParentIndex] = temp;
+			currentNodeIndex = currentParentIndex;
+			currentNode = nodes[currentNodeIndex];
+			currentParentIndex = Math.floor((currentParentIndex - 1)/2);
+			currentParent = nodes[currentParentIndex];
 		}
 
 		if(nodes[0] != this.root){
-			this.root = nodes[0]
+			this.root = nodes[0];
 		}
 	}
 
-	downHeap(this:GameTree, node:Node): void
+	downHeap(node:GameNode): void
 	{
-		let nodes: Node[] = this.nodes
-		let currentNodeIndex: number = nodes.indexOf(node)
-		let currentNode: Node = node
-		let currentLeftChild: Node = nodes[2*currentNodeIndex + 1]
-		let currentRightChild: Node = nodes[2*currentNodeIndex + 2]
+		let nodes: GameNode[] = this.nodes;
+		let currentNodeIndex: number = nodes.indexOf(node);
+		let currentNode: GameNode = node;
+		let currentLeftChild: GameNode = nodes[2*currentNodeIndex + 1];
+		let currentRightChild: GameNode = nodes[2*currentNodeIndex + 2];
 
 		while(currentNodeIndex < nodes.length)
 		{
 			if(currentNode.value >= currentLeftChild.value)
 			{
-				let temp:Node = currentNode
-				nodes[currentNodeIndex] = currentLeftChild
-				nodes[2*currentNodeIndex + 1] = temp
-				currentNodeIndex = 2*currentNodeIndex + 1
-				currentNode = nodes[currentNodeIndex]
-				currentLeftChild = nodes[2*currentNodeIndex + 1]
+				let temp:GameNode = currentNode;
+				nodes[currentNodeIndex] = currentLeftChild;
+				nodes[2*currentNodeIndex + 1] = temp;
+				currentNodeIndex = 2*currentNodeIndex + 1;
+				currentNode = nodes[currentNodeIndex];
+				currentLeftChild = nodes[2*currentNodeIndex + 1];
 
 			}else if (currentNode.value >= currentRightChild.value){
-				let temp:Node = currentNode
-				nodes[currentNodeIndex] = currentRightChild
-				nodes[2*currentNodeIndex + 2] = temp
-				currentNodeIndex = 2*currentNodeIndex + 2
-				currentNode = nodes[currentNodeIndex]
-				currentRightChild = nodes[2*currentNodeIndex + 2]
+				let temp:GameNode = currentNode;
+				nodes[currentNodeIndex] = currentRightChild;
+				nodes[2*currentNodeIndex + 2] = temp;
+				currentNodeIndex = 2*currentNodeIndex + 2;
+				currentNode = nodes[currentNodeIndex];
+				currentRightChild = nodes[2*currentNodeIndex + 2];
 			} else {
-				break
+				break;
 			}
 		}
 	}
 
-	insertNode(this:GameTree, node:Node): void
+	insertNode(node:GameNode): void
 	{
-		let nodes: Node[] = this.nodes
-		nodes.push(node)
-		let size: number = nodes.length
-		let parent:Node = nodes[Math.floor((size - 2)/2)]
+		let nodes: GameNode[] = this.nodes;
+		nodes.push(node);
+		let size: number = nodes.length;
+		let parent:GameNode = nodes[Math.floor((size - 2)/2)];
 
 		if(node.value < parent.value)
 		{
-			upHeap.call(this, node)
+			upHeap.call(this, node);
 		}
 	}
 
 
-	deleteNode(this:GameTree, node:Node): Node
+	deleteNode(node:GameNode): GameNode
 
 	{
-		let nodes:Node[] = this.nodes
-		let nodeIndex: number = nodes.indexOf(node)
-		let placeholderNode:Node = new Node(0, null, null, null, null, null, Infinity, false)
-		let deleted:Node = nodes.splice(nodeIndex, 1, placeholderNode)
-		let deletedNodeParent:Node = this.nodes[Math.floor((nodeIndex - 1)/2)]
-		downHeap.call(this, placeholderNode)
-		delete placeholderNode
-		return deleted
+		let nodes:GameNode[] = this.nodes;
+		let nodeIndex: number = nodes.indexOf(node);
+		let placeholderNode:GameNode = new GameNode(0, null, null, null, null, null, Infinity, false);
+		let deleted:GameNode = nodes.splice(nodeIndex, 1, placeholderNode);
+		let deletedNodeParent:GameNode = this.nodes[Math.floor((nodeIndex - 1)/2)];
+		downHeap.call(this, placeholderNode);
+		delete placeholderNode;
+		return deleted;
 	}
 
-	extractMin(this:GameTree): Node
+	extractMin(): GameNode
 	{
-		let removed:Node  =  this.nodes.shift()
-		let nodes:Node[] = this.nodes
-		let placeholderNode:Node = new Node(0, null, null, null, null, null, Infinity, false)
-		this.nodes.unshift(placeholderNode)
-		downHeap.call(this, placeholderNode)
-		delete placeholderNode
-		return removed	
+		let removed:GameNode  =  this.nodes.shift();
+		let nodes:GameNode[] = this.nodes;
+		let placeholderNode:GameNode = new GameNode(0, null, null, null, null, null, Infinity, false);
+		this.nodes.unshift(placeholderNode);
+		downHeap.call(this, placeholderNode);
+		delete placeholderNode;
+		return removed;
 	}
 
-	getNodes(this:GameTree): Node[]
+	get getNodes(): GameNode[]
 	{
-		return this.nodes
+		return this.nodes;
 	}
 
 
-	getId(this:GameTree): number
+	get getId(): number
 	{
-		return this.game_id
+		return this.game_id;
 	}
 
-	getRoot(this:GameTree):Node
+	get getRoot():GameNode
 	{
-		return this.root
+		return this.root;
 	}
 
-	setNodeValue(this:GameTree, node:Node, newValue:number):void
+	set setNodeValue(node:GameNode, newValue:number):void
 	{
-		node.value = newValue
-		let nodeIndex:number = this.indexOf(node)
-		let nodes:Node[] = this.nodes
-		let leftChild:Node = nodes[2*nodeIndex + 1]
-		let rightChild:Node = nodes[2*nodeIndex + 2]
-		let parent:Node = nodes[Math.floor(nodeIndex -1)/2]
+		node.value = newValue;
+		let nodeIndex:number = this.indexOf(node);
+		let nodes:GameNode[] = this.nodes;
+		let leftChild:GameNode = nodes[2*nodeIndex + 1];
+		let rightChild:GameNode = nodes[2*nodeIndex + 2];
+		let parent:GameNode = nodes[Math.floor(nodeIndex -1)/2];
 
 		if(node.value >= leftChild.value || node.value >= rightChild.value)
 		{
-			downHeap.call(this, node)		
+			downHeap.call(this, node);		
 
 		}
 
 		if(node.value < parent.value)
 		{
-			upHeap.call(this, node)
+			upHeap.call(this, node);
 		}
 	}	
 
-	isActive(this:GameTree):boolean
+	get isActive():boolean
 	{
-		return this.active
+		return this.active;
 	}
 
 
@@ -173,8 +179,8 @@ export class GameTree
 										  )
 		if( typeof stringifiedJSON === 'string')
 		{
-			const Loaded: GameState = JSON.parse(stringifiedJSON)
-			return Loaded
+			const Loaded: GameState = JSON.parse(stringifiedJSON);
+			return Loaded;
 		}
 
 		const NewGameState: GameState = {
@@ -182,8 +188,7 @@ export class GameTree
 			gameTree: [],
 		}
 
-		return NewGameState	
+		return NewGameState;	
 	}	
 }
-//TODO: insert, delete, heapify, extract min
 

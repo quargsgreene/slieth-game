@@ -1,117 +1,132 @@
-export class Node
+export interface NodeOptions {
+	node_id: number;
+	text:string[];
+	node_images: string[];
+	audio: string[];
+	puzzles: string[];
+	apiData: unknown[]; 
+	layoutOption: number;
+	value: number;
+	active: boolean;
+}
+
+
+
+export class GameNode
 {
-	constructor(
-		opts:{node_id:number,
-		text:string[],
-		node_images:string[],
-		audio:string[],
-		puzzles:string[],
-		apiData:[],
-		layoutOption:number,
-		value:number,
-		active:boolean
-		}
+	node_id: number;
+	text: string;
+	node_images: string[];
+	audio: string[];
+	puzzles: string[];
+	apiData: unknown[];
+	layoutOption: number;
+	value: number;
+	active: boolean;
+
+	constructor(opts: NodeOptions)		
 	){
-		opts.node_id = node_id
-		opts.text = text
-		opts.node_images = node_images
-		opts.audio = audio
-		opts.puzzles = puzzles
-		opts.apiData = apiData
-		opts.value = value
-		opts.active = boolean
+		this.node_id = opts.node_id;
+		this.text = opts.text;
+		this.node_images = opts.node_images;
+		this.audio = opts.audio;
+		this.puzzles = opts.puzzles;
+		this.apiData = opts.apiData;
+		this.layoutOption = opts.layoutOption;
+		this.value = opts.value;
+		this.active = opts.active;
 	}
 
-	get getNodeId(this:Node):number
+	get getNodeId():number
 	{
-		return this.node_id
-	}
-
-
-	get getNodeText(this:Node):string[]
-	{
-		return this.text
+		return this.node_id;
 	}
 
 
-	get getImages(this:Node):string[]
+	get getNodeText():string[]
 	{
-		return this.node_images
-	}
-
-	get getAudio(this:Node):string[]
-	{
-		return this.audio
+		return this.text;
 	}
 
 
-	get getPuzzles(this:Node):string[]
+	get getImages():string[]
 	{
-		return this.puzzles
+		return this.node_images;
+	}
+
+	get getAudio():string[]
+	{
+		return this.audio;
 	}
 
 
-	get getApiData(this:Node):[]
+	get getPuzzles():string[]
 	{
-		return this.apiData
+		return this.puzzles;
 	}
 
 
-	get getValue(this:Node):number
-
+	get getApiData():unknown[]
 	{
-		return this.value
+		return this.apiData;
 	}
 
 
-	get isActive(this:Node):boolean
+	get getValue():number
 
 	{
-		return this.active
+		return this.value;
 	}
 
 
-	set setId(this:Node, newId:number)
-	{
-		this.id = newId
-	}
+	get isActive():boolean
 
-	set setText(this:Node, newText:string[])
 	{
-		this.text = newText
+		return this.active;
 	}
 
 
-	set setImages(this:Node, newImages:string[])
+	set setId(newId:number)
 	{
-		this.images = newImages
+		this.id = newId;
+	}
+
+	set setText(newText:string[])
+	{
+		this.text = newText;
 	}
 
 
-	set setAudio(this:Node, newAudio:string[])
+	set setImages(newImages:string[])
 	{
-		this.audio = newAudio
+		this.images = newImages;
 	}
 
 
-	set setPuzzles(this:Node, newPuzzles:string[])
+	set setAudio(newAudio:string[])
 	{
-		this.puzzles = newPuzzles
+		this.audio = newAudio;
+	}
+
+
+	set setPuzzles(newPuzzles:string[])
+	{
+		this.puzzles = newPuzzles;
 
 	}
 
 
-	set setApiData(this:Node, newApiData:[])
+	set setApiData(newApiData:unknown[])
 
 	{
-		this.apiData = newApiData
+		this.apiData = newApiData;
 	}
 
 
-	set toggleActive(this:Node, activityState:boolean)
+	set toggleActive(activityState:boolean)
 
 	{
-		this.active = activityState
+		this.active = activityState;
 	}
 }
 
