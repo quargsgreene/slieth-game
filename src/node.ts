@@ -1,16 +1,5 @@
 export class Node
 {
-
-	id:number,
-	text?: string[],
-	images?: string[],
-	audio?: string[],
-	puzzles?: string[],
-	apiData?: [],
-	layoutOption?: number,
-	value: number,
-	active:boolean
-
 	constructor(
 		id:number,
 		text:string[],
