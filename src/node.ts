@@ -1,9 +1,9 @@
 export class Node
 {
 	constructor(
-		id:number,
+		node_id:number,
 		text:string[],
-		images:string[],
+		node_images:string[],
 		audio:string[],
 		puzzles:string[],
 		apiData:[],
@@ -11,9 +11,9 @@ export class Node
 		value:number,
 		active:boolean
 	){
-		this.id = id
+		this.node_id = id
 		this.text = text
-		this.images = images
+		this.node_images = images
 		this.audio = audio
 		this.puzzles = puzzles
 		this.apiData = apiData
@@ -21,93 +21,93 @@ export class Node
 		this.active = boolean
 	}
 
-	getNodeId(this:Node)
+	get getNodeId(this:Node):number
 	{
-		return this.id
+		return this.node_id
 	}
 
 
-	getNodeText(this:Node)
+	get getNodeText(this:Node):string[]
 	{
 		return this.text
 	}
 
 
-	getImages(this:Node)
+	get getImages(this:Node):string[]
 	{
-		return this.images
+		return this.node_images
 	}
 
-	getAudio(this:Node)
+	get getAudio(this:Node):string[]
 	{
 		return this.audio
 	}
 
 
-	getPuzzles(this:Node)
+	get getPuzzles(this:Node):string[]
 	{
 		return this.puzzles
 	}
 
 
-	getApiData(this:Node)
+	get getApiData(this:Node):[]
 	{
 		return this.apiData
 	}
 
 
-	getValue(this:Node)
+	get getValue(this:Node):number
 
 	{
 		return this.value
 	}
 
 
-	isActive(this:Node)
+	get isActive(this:Node):boolean
 
 	{
 		return this.active
 	}
 
 
-	setId(this:Node, newId:number)
+	set setId(this:Node, newId:number)
 	{
 		this.id = newId
 	}
 
-	setText(this:Node, newText:string[])
+	set setText(this:Node, newText:string[])
 	{
 		this.text = newText
 	}
 
 
-	setImages(this:Node, newImages:string[])
+	set setImages(this:Node, newImages:string[])
 	{
 		this.images = newImages
 	}
 
 
-	setAudio(this:Node, newAudio:string[])
+	set setAudio(this:Node, newAudio:string[])
 	{
 		this.audio = newAudio
 	}
 
 
-	setPuzzles(this:Node, newPuzzles:string[])
+	set setPuzzles(this:Node, newPuzzles:string[])
 	{
 		this.puzzles = newPuzzles
 
 	}
 
 
-	setApiData(this:Node, newApiData:[])
+	set setApiData(this:Node, newApiData:[])
 
 	{
 		this.apiData = newApiData
 	}
 
 
-	toggleActive(this:Node, activityState:boolean)
+	set toggleActive(this:Node, activityState:boolean)
 
 	{
 		this.active = activityState
