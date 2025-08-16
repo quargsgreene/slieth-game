@@ -103,7 +103,7 @@ function deleteNode(this:GameTree, node:Node): Node
 {
 	let nodes:Node[] = this.nodes
 	let nodeIndex: number = nodes.indexOf(node)
-	let placeholderNode:Node = new Node(0, Infinity, false)
+	let placeholderNode:Node = new Node(0, null, null, null, null, null, Infinity, false)
 	let deleted:Node = nodes.splice(nodeIndex, 1, placeholderNode)
 	let deletedNodeParent:Node = this.nodes[Math.floor((nodeIndex - 1)/2)]
 	downHeap.call(this, placeholderNode)
@@ -115,7 +115,7 @@ function extractMin(this:GameTree): Node
 {
 	let removed:Node  =  this.nodes.shift()
 	let nodes:Node[] = this.nodes
-	let placeholderNode:Node = new Node(0, Infinity, false)
+	let placeholderNode:Node = new Node(0, null, null, null, null, null, Infinity, false)
 	this.nodes.unshift(placeholderNode)
 	downHeap.call(this, placeholderNode)
 	delete placeholderNode
