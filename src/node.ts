@@ -10,7 +10,7 @@ export class Node
 		layoutOption:number,
 		value:number,
 		active:boolean
-	)
+	){}
 
 	getNodeId(this:Node)
 	{
