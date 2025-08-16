@@ -29,11 +29,12 @@ export enum LocalStorageKey
 function upHeap(this:GameTree, node:Node):void
 {
 
-	let currentParentIndex: number = Math.floor((nodeIndex - 1)/2)
+
 	let nodes: Node[] = this.nodes
 	let currentNodeIndex: number = nodes.indexOf(node)
-	let currentParent: Node = nodes[Math.floor((nodeIndex - 1)/2)]
+	let currentParent: Node = nodes[Math.floor((currentNodeIndex - 1)/2)]
 	let currentNode: Node = node
+	let currentParentIndex: number = Math.floor((currentNodeIndex - 1)/2)
 
 	while(node.value < currentParent.value && currentNodeIndex > 0)
 	{
@@ -55,10 +56,10 @@ function upHeap(this:GameTree, node:Node):void
 function downHeap(this:GameTree, node:Node): void
 {
 	let nodes: Node[] = this.nodes
-	let currentLeftChild: Node = nodes[2*currentNodeIndex + 1]
-	let currentRightChild: Node = nodes[2*currentNodeIndex + 2]
 	let currentNodeIndex: number = nodes.indexOf(node)
 	let currentNode: Node = node
+	let currentLeftChild: Node = nodes[2*currentNodeIndex + 1]
+	let currentRightChild: Node = nodes[2*currentNodeIndex + 2]
 
 	while(currentNodeIndex < nodes.length)
 	{
