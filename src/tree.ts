@@ -26,7 +26,7 @@ export enum LocalStorageKey
 }
 
 //TODO: insert, delete, heapify, extract min
-function upHeap(node:Node, this:GameTree):void
+function upHeap(this:GameTree, node:Node):void
 {
 	let currentNodeIndex: number = nodes.indexOf(node)
 	let currentParent: Node = this.nodes[Math.floor((nodeIndex - 1)/2)]
@@ -51,7 +51,7 @@ function upHeap(node:Node, this:GameTree):void
 
 }
 
-function downHeap(node:Node, this:GameTree): void
+function downHeap(this:GameTree, node:Node): void
 {
 	let currentNodeIndex: number = nodes.indexOf(node)
 	let currentNode: Node = node
