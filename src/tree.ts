@@ -27,12 +27,10 @@ export enum LocalStorageKey
 export class GameTree
 {
 
-	constructor(opts:{game_id:number, nodes:GameNode[], active:boolean, root:GameNode}){
-			this.game_id = opts.game_id;
-			this.nodes = opts.nodes;
-			this.active = opts.active;
-			this.root = opts.root;
-			}
+	constructor(public game_id: number,
+		   public nodes: GameNode[],
+		   public active: boolean,
+		   public root: GameNode ){}
 
 	upHeap(node:GameNode):void
 	{
@@ -111,7 +109,7 @@ export class GameTree
 	{
 		let nodes:GameNode[] = this.nodes;
 		let nodeIndex: number = nodes.indexOf(node);
-		let placeholderNode:GameNode = new GameNode(0, null, null, null, null, null, Infinity, false);
+		let placeholderNode:GameNode = new GameNode(0, [""], [""], [""], [""], [], Infinity, false);
 		let deleted:GameNode = nodes.splice(nodeIndex, 1, placeholderNode);
 		let deletedNodeParent:GameNode = this.nodes[Math.floor((nodeIndex - 1)/2)];
 		downHeap.call(this, placeholderNode);
@@ -123,7 +121,7 @@ export class GameTree
 	{
 		let removed:GameNode  =  this.nodes.shift();
 		let nodes:GameNode[] = this.nodes;
-		let placeholderNode:GameNode = new GameNode(0, null, null, null, null, null, Infinity, false);
+		let placeholderNode:GameNode = new GameNode(0, [""], [""], [""], [""], [], Infinity, false);
 		this.nodes.unshift(placeholderNode);
 		downHeap.call(this, placeholderNode);
 		delete placeholderNode;
