@@ -20,7 +20,14 @@ export enum LocalStorageKey
 export class GameTree
 {
 
-	constructor(game_id:string, nodes:Node[], active:boolean, root:Node){}
+	constructor(game_id:string, nodes:Node[], active:boolean, root:Node){
+	
+		this.game_id = game_id
+		this.nodes = nodes
+		this.active = active
+		this.root = root
+	}
+
 	upHeap(this:GameTree, node:Node):void
 	{
 

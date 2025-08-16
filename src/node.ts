@@ -10,7 +10,16 @@ export class Node
 		layoutOption:number,
 		value:number,
 		active:boolean
-	){}
+	){
+		this.id = id
+		this.text = text
+		this.images = images
+		this.audio = audio
+		this.puzzles = puzzles
+		this.apiData = apiData
+		this.value = value
+		this.active = boolean
+	}
 
 	getNodeId(this:Node)
 	{
