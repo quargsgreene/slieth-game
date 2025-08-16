@@ -12,9 +12,9 @@ export class Node
 		active:boolean
 		}
 	){
-		opts.node_id = id
+		opts.node_id = node_id
 		opts.text = text
-		opts.node_images = images
+		opts.node_images = node_images
 		opts.audio = audio
 		opts.puzzles = puzzles
 		opts.apiData = apiData
