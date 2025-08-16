@@ -50,7 +50,6 @@ function upHeap(this:GameTree, node:Node):void
 	if(nodes[0] != this.root){
 		this.root = nodes[0]
 	}
-
 }
 
 function downHeap(this:GameTree, node:Node): void
@@ -94,7 +93,7 @@ function insertNode(this:GameTree, node:Node): void
 
 	if(node.value < parent.value)
 	{
-		upHeap.call(node, this)
+		upHeap.call(this, node)
 	}
 }
 
@@ -107,7 +106,7 @@ function deleteNode(this:GameTree, node:Node): Node
 	let placeholderNode:Node = new Node(0, Infinity, false)
 	let deleted:Node = nodes.splice(nodeIndex, 1, placeholderNode)
 	let deletedNodeParent:Node = this.nodes[Math.floor((nodeIndex - 1)/2)]
-	downHeap.call(placeholderNode, this)
+	downHeap.call(this, placeholderNode)
 	delete placeholderNode
 	return deleted
 }
@@ -118,7 +117,7 @@ function extractMin(this:GameTree): Node
 	let nodes:Node[] = this.nodes
 	let placeholderNode:Node = new Node(0, Infinity, false)
 	this.nodes.unshift(placeholderNode)
-	downHeap.call(placeholderNode, this)
+	downHeap.call(this, placeholderNode)
 	delete placeholderNode
 	return removed	
 }
@@ -150,13 +149,13 @@ function setNodeValue(this:GameTree, node:Node, newValue:number):void
 
 	if(node.value >= leftChild.value || node.value >= rightChild.value)
 	{
-		downHeap.call(node, this)		
+		downHeap.call(this, node)		
 
 	}
 
 	if(node.value < parent.value)
 	{
-		upHeap.call(node, this)
+		upHeap.call(this, node)
 	}
 }	
 
