@@ -104,15 +104,18 @@ export class GameTree
 	}
 
 
-	deleteNode(node:GameNode): GameNode
+	deleteNode(node:GameNode): GameNode | null
 
 	{
 		let nodes:GameNode[] = this.nodes;
 		let nodeIndex: number = nodes.indexOf(node);
 		let placeholderNode:GameNode = new GameNode(0, [""], [""], [""], [""], [], 0, Infinity, false);
-		let deleted:GameNode = nodes.splice(nodeIndex, 1, placeholderNode);
+		let deleted:GameNode = nodes.splice(nodeIndex, 1, placeholderNode)[0];
+		if(!deleted){
+			return null;
+		}
 		let deletedNodeParent:GameNode = this.nodes[Math.floor((nodeIndex - 1)/2)];
-		downHeap.call(this, placeholderNode);
+		this.downHeap(placeholderNode);
 		delete placeholderNode;
 		return deleted;
 	}
@@ -123,7 +126,7 @@ export class GameTree
 		let nodes:GameNode[] = this.nodes;
 		let placeholderNode:GameNode = new GameNode(0, [""], [""], [""], [""], [], 0, Infinity, false);
 		this.nodes.unshift(placeholderNode);
-		downHeap.call(this, placeholderNode);
+		this.downHeap(placeholderNode);
 		delete placeholderNode;
 		return removed;
 	}
