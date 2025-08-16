@@ -1,7 +1,7 @@
 export class Node
 {
 	constructor(
-		node_id:number,
+		opts:{node_id:number,
 		text:string[],
 		node_images:string[],
 		audio:string[],
@@ -10,15 +10,16 @@ export class Node
 		layoutOption:number,
 		value:number,
 		active:boolean
+		}
 	){
-		this.node_id = id
-		this.text = text
-		this.node_images = images
-		this.audio = audio
-		this.puzzles = puzzles
-		this.apiData = apiData
-		this.value = value
-		this.active = boolean
+		opts.node_id = id
+		opts.text = text
+		opts.node_images = images
+		opts.audio = audio
+		opts.puzzles = puzzles
+		opts.apiData = apiData
+		opts.value = value
+		opts.active = boolean
 	}
 
 	get getNodeId(this:Node):number
