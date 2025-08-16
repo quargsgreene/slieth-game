@@ -2,11 +2,12 @@ export interface Node
 {
 
 	id:number,
-	text: string[],
-	images: string[],
-	audio: string[],
-	puzzles: string[],
-	apiData: [],
+	text?: string[],
+	images?: string[],
+	audio?: string[],
+	puzzles?: string[],
+	apiData?: [],
+	layoutOption?: number,
 	value: number,
 	active:boolean
 
