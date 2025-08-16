@@ -99,7 +99,7 @@ export class GameTree
 
 		if(node.value < parent.value)
 		{
-			upHeap.call(this, node);
+			this.upHeap(node);
 		}
 	}
 
@@ -155,13 +155,13 @@ export class GameTree
 
 		if(node.value >= leftChild.value || node.value >= rightChild.value)
 		{
-			downHeap.call(this, node);		
+			this.downHeap(node);		
 
 		}
 
 		if(node.value < parent.value)
 		{
-			upHeap.call(this, node);
+			this.upHeap(node);
 		}
 	}	
 
