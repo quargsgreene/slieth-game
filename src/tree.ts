@@ -47,7 +47,7 @@ function upHeap(this:GameTree, node:Node):void
 		currentParent = nodes[currentParentIndex]
 	}
 
-	if(nodes[0] != nodes.root){
+	if(nodes[0] != this.root){
 		this.root = nodes[0]
 	}
 
