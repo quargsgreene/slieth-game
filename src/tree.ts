@@ -103,10 +103,36 @@ export class GameTree
 		}
 	}
 
+	extractMin(): GameNode | null
+	{
+		/*let removed:GameNode  =  this.nodes.shift();
+		let nodes:GameNode[] = this.nodes;
+		let placeholderNode:GameNode = new GameNode(0, [""], [""], [""], [""], [], 0, Infinity, false);
+		this.nodes.unshift(placeholderNode);
+		this.downHeap(placeholderNode);
+		delete placeholderNode;*/
+	       /*let size:number = this.nodes.length;
+	       let temp:GameNode = this.root;
+	       let nodes:GameNode[] = this.nodes;
+	       nodes[0] = nodes[size - 1];
+	       nodes[size - 1] = temp;
+	       let removed = nodes.pop();
+	       nodes.downHeap(nodes[0]);
+	       nodes.root = nodes[0];*/
+	       let removed:GameNode = this.root;
+	       let nodes:GameNode[] = this.nodes;
+	       node[0].value = Number.POSITIVE_INFINITY;
+	       this.downHeap(node[0]);
+	       nodes.pop();
+	       this.root = nodes[0];
+
+	       return removed ?? null;
+	}
+
 
 	deleteNode(node:GameNode): GameNode | null
 
-	{
+	{/*
 		let nodes:GameNode[] = this.nodes;
 		let nodeIndex: number = nodes.indexOf(node);
 		let placeholderNode:GameNode = new GameNode(0, [""], [""], [""], [""], [], 0, Infinity, false);
@@ -117,19 +143,19 @@ export class GameTree
 		let deletedNodeParent:GameNode = this.nodes[Math.floor((nodeIndex - 1)/2)];
 		this.downHeap(placeholderNode);
 		delete placeholderNode;
-		return deleted;
+		return deleted;*/
+
+	       let temp:GameNode = node;
+	       let nodes:GameNode[] = this.nodes;
+	       let removed:GameNode = node;
+	       node.value = Number.NEGATIVE_INFINITY;
+	       this.upHeap(node);
+	       this.extractMin();
+	       this.root = nodes[0];
+
+	       return removed ?? null;
 	}
 
-	extractMin(): GameNode
-	{
-		let removed:GameNode  =  this.nodes.shift();
-		let nodes:GameNode[] = this.nodes;
-		let placeholderNode:GameNode = new GameNode(0, [""], [""], [""], [""], [], 0, Infinity, false);
-		this.nodes.unshift(placeholderNode);
-		this.downHeap(placeholderNode);
-		delete placeholderNode;
-		return removed;
-	}
 
 	get getNodes(): GameNode[]
 	{
@@ -166,6 +192,7 @@ export class GameTree
 		{
 			this.upHeap(node);
 		}
+		this.root = nodes[0];
 	}	
 
 	get isActive():boolean
