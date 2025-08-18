@@ -176,7 +176,7 @@ export class GameTree
 	setNodeValue(node:GameNode, newValue:number):void
 	{
 		node.value = newValue;
-		let nodeIndex:number = this.indexOf(node);
+		let nodeIndex:number = this.nodes.indexOf(node);
 		let nodes:GameNode[] = this.nodes;
 		let leftChild:GameNode = nodes[2*nodeIndex + 1];
 		let rightChild:GameNode = nodes[2*nodeIndex + 2];
