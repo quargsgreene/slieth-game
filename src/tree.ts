@@ -157,23 +157,23 @@ export class GameTree
 	}
 
 
-	get getNodes(): GameNode[]
+	getNodes(): GameNode[]
 	{
 		return this.nodes;
 	}
 
 
-	get getId(): number
+	getId(): number
 	{
 		return this.game_id;
 	}
 
-	get getRoot():GameNode
+	getRoot():GameNode
 	{
 		return this.root;
 	}
 
-	set setNodeValue(node:GameNode, newValue:number):void
+	setNodeValue(node:GameNode, newValue:number):void
 	{
 		node.value = newValue;
 		let nodeIndex:number = this.indexOf(node);
@@ -195,7 +195,7 @@ export class GameTree
 		this.root = nodes[0];
 	}	
 
-	get isActive():boolean
+	isActive():boolean
 	{
 		return this.active;
 	}
