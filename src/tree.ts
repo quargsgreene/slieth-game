@@ -121,8 +121,8 @@ export class GameTree
 	       nodes.root = nodes[0];*/
 	       let removed:GameNode = this.root;
 	       let nodes:GameNode[] = this.nodes;
-	       node[0].value = Number.POSITIVE_INFINITY;
-	       this.downHeap(node[0]);
+	       nodes[0].value = Number.POSITIVE_INFINITY;
+	       this.downHeap(nodes[0]);
 	       nodes.pop();
 	       this.root = nodes[0];
 
