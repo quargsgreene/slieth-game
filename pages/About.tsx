@@ -13,8 +13,7 @@ const About: React.FC = () => {
       <p>The decisions you make with your appendages will determine how you engage with thoughts of entrails.</p>
       <br/>
       <p>Have a click around.</p>
-      <Image src="/slieth.png" alt="Slieth Logo" width={64} height={64} priority />
-      <Link href="/">Home</Link>
+      <Image src="/slieth.png" alt="Slieth Logo" width={1000} height={1000} priority />
     </div>
   );
 }

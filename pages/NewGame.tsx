@@ -4,7 +4,6 @@ const NewGame: React.FC = () => {
     <div>
       <h1>New Game</h1>
       <p>Start a new adventure!</p>
-      <a href="/">Home</a>
     </div>
   );
 }

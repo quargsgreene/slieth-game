@@ -5,7 +5,6 @@ const ContinueGame: React.FC = () => {
         <div> 
             <h1>Continue Game</h1>
             <p>Continue your previous adventure!</p>
-            <Link href="/">Home</Link>
         </div>
     );
 }
