@@ -1,5 +1,6 @@
 import React from 'react';
 import Link from 'next/link';
+import Image from 'next/image';
 
 const About: React.FC = () => {
   return (
@@ -12,7 +13,7 @@ const About: React.FC = () => {
       <p>The decisions you make with your appendages will determine how you engage with thoughts of entrails.</p>
       <br/>
       <p>Have a click around.</p>
-      <img src="/public/slieth.png" alt="Slieth Logo" style={{ width: '1em', height: '1em' }} />
+      <Image src="/slieth.png" alt="Slieth Logo" width={64} height={64} priority />
       <Link href="/">Home</Link>
     </div>
   );
