@@ -1,2 +1,39 @@
-node_modules
+# Next.js build output
+.next/
+out/
+
+# Node modules
+node_modules/
+
+# Environment variables
+.env
+.env.local
+.env.development.local
+.env.production.local
+
+# npm package manager cache
+.npm/
+npm-debug.log*
+
+# Yarn package manager cache
+.yarn/
+yarn-debug.log*
+yarn-error.log*
+
+# Vercel build output
+.vercel/
+
+# TypeScript build output
+dist/
+build/
+
+# IDE specific files
+.vscode/
+.idea/
+
+# Operating System files
 .DS_Store
+Thumbs.db
+
+# Secrets
+run/secrets/

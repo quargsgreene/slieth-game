@@ -1,0 +1,64 @@
+services:
+  app:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    ports:
+      - "3000:3000"
+    volumes:
+      - ".:/src"
+    secrets:
+      - db_init_username
+      - db_init_password
+      - app_user
+      - app_pwd
+      - db_name
+      - db_collection_name
+      - hostname
+      - db_uri
+  mongodb:
+      container_name: slieth_db
+      image: mongo:latest
+      volumes:
+        - ./scripts/mongo/init/:/docker-entrypoint-initdb.d
+        - ./scripts/mongo/init:/home/mongodb
+        - slieth_data:/data/db
+      ports:
+        - "28017:27017"
+      environment:
+        MONGO_INITDB_ROOT_USERNAME_FILE: ./run/secrets/db_init_username
+        MONGO_INITDB_ROOT_PASSWORD_FILE: ./run/secrets/db_init_password
+        APP_USER_FILE: ./run/secrets/app_user
+        APP_PWD_FILE: ./run/secrets/app_pwd
+        DB_NAME_FILE: ./run/secrets/db_name
+        DB_COLLECTION_NAME_FILE: ./run/secrets/db_collection_name
+        DB_HOSTNAME_FILE: ./run/secrets/hostname
+        MONGO_URI: ./run/secrets/db_uri
+      secrets:
+        - db_init_username
+        - db_init_password
+        - app_user
+        - app_pwd
+        - db_name
+        - db_collection_name
+        - hostname
+        - db_uri
+volumes: 
+  slieth_data:
+secrets:
+   db_init_username:
+     file: ./run/secrets/db_init_username.txt
+   db_init_password:
+     file: ./run/secrets/db_init_password.txt
+   app_user:
+     file: ./run/secrets/app_user.txt
+   app_pwd:
+     file: ./run/secrets/app_pwd.txt
+   db_name:
+     file: ./run/secrets/db_name.txt
+   db_collection_name:
+     file: ./run/secrets/db_collection_name.txt
+   hostname:
+     file: ./run/secrets/hostname.txt
+   db_uri:
+     file: ./run/secrets/db_uri.txt
