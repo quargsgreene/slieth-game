@@ -1,12 +1,12 @@
-FROM node:23-alpine AS base
+FROM node:22-bullseye AS base
 
 FROM base AS deps
 
-RUN apk add --no-cache libc6-compat
+# RUN apk add --no-cache libc6-compat
 
 WORKDIR /slieth-game
 
-COPY package.json yarn-lock* package-lock.json* pnpm-lock.yaml* .npmrc* ./
+COPY package.json yarn.lock* package-lock.json* pnpm-lock.yaml* .npmrc* ./
 
 RUN \
 	if [ -f yarn.lock ]; then yarn; \
@@ -39,7 +39,7 @@ RUN adduser --system --uid 1001 nextjs
 
 COPY --from=builder --chown=nextjs:nodejs /slieth-game/public ./public
 COPY --from=builder --chown=nextjs:nodejs /slieth-game/.next/standalone ./
-COPY --from=builder --chown=nextjs:nodejs /slieth-game/.next/static ./next/static
+COPY --from=builder --chown=nextjs:nodejs /slieth-game/.next/static ./.next/static
 RUN chmod -R a-w+x . && chmod -R a+x .next node_modules
 
 USER nextjs
