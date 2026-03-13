@@ -1,6 +1,6 @@
-const mongoose = require('mongoose')
+import { Schema, model } from 'mongoose';
 
-const gameNodeSchema = new mongoose.Schema({
+const gameNodeSchema = new Schema({
     imageUrl: {
         type: String,
         required: false
@@ -17,6 +17,6 @@ const gameNodeSchema = new mongoose.Schema({
         type: Number,
         required: true
     }
-});
+}, {timestamps: true});
 
-module.exports = mongoose.model('GameNodes', gameNodeSchema)
+export default model('GameNodes', gameNodeSchema)
