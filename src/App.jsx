@@ -1,35 +1,27 @@
-import { useState } from 'react'
-import reactLogo from './assets/react.svg'
-import viteLogo from '/vite.svg'
 import './App.css'
-import NodeList from './components/NodeList'
+import Lose from './pages/Lose'
+import Win from './pages/Win'
+import NotFound from './pages/NotFound'
+import About from './pages/About'
+import Help from './pages/Help'
+// import NodeList from './components/NodeList'
+import CurrentGameStatus from './pages/CurrentGameStatus'
+import Reason from './components/Reason'
+import GameNodeViewPage from './pages/GameNodeViewPage'
 
 function App() {
-  const [count, setCount] = useState(0)
+  // const someLoseReason = new Reason('All nodes have been removed.', true);
+  const someWinReason = new Reason('The critical quantity of nodes has been exceeded.', false);
 
   return (
     <>
-      <div>
-        <a href="https://vite.dev" target="_blank">
-          <img src={viteLogo} className="logo" alt="Vite logo" />
-        </a>
-        <a href="https://react.dev" target="_blank">
-          <img src={reactLogo} className="logo react" alt="React logo" />
-        </a>
-        <NodeList/>
-      </div>
-      <h1>Vite + React</h1>
-      <div className="card">
-        <button onClick={() => setCount((count) => count + 1)}>
-          count is {count}
-        </button>
-        <p>
-          Edit <code>src/App.jsx</code> and save to test HMR
-        </p>
-      </div>
-      <p className="read-the-docs">
-        Click on the Vite and React logos to learn more
-      </p>
+        {/* < CurrentGameStatus />  */}
+        {/* < Win reason={someWinReason.reason} /> */}
+        {/* < Lose reason={someLoseReason.reason} /> */}
+        {/* <NotFound /> */}
+        {/* <About /> */}
+        {/* <Help /> */}
+        {<GameNodeViewPage />}
     </>
   )
 }

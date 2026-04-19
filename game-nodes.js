@@ -1,3 +1,5 @@
+// routes
+
 import express from 'express';
 import { deleteGameNode, createGameNode, getAllGameNodes, updateGameNode, deleteAllGameNodes, getGameNodeById, replaceGameNode } from './slieth-controller.js';
 
