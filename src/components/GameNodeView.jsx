@@ -2,26 +2,16 @@ import Button from './Button';
 import hydrateGameNode from './hydrateGameNode';
 import { useEffect, useState } from 'react';
 
-export default function GameNodeView(){
-    const [gameNodeInternal, setGameNodeInternal] = useState(null);
-    useEffect(() => {
-       
-       const createGameNode = async () => {
-            const gameNode = await hydrateGameNode();
-            console.log("I ran!");
-            console.log("fetched game node: ", gameNode);
-            setGameNodeInternal(gameNode);
-     };
-     createGameNode();
-
-    }, []);
+export default function GameNodeView({ gameNode }) {
+    const mkUrl = (u) => (u ? (u.startsWith('http') ? u : `http://${u}`) : null);
 
     return (
         <div className="game-node">
-            {<h1>{gameNodeInternal?.value}</h1>}
-            {<audio src={"http://" + gameNodeInternal?.audioUrl} controls />}
-            {<img src={"http://" + gameNodeInternal?.imageUrl} alt={"http://" + gameNodeInternal?.imageUrl.substring(gameNodeInternal?.imageUrl.lastIndexOf('/') + 1)} />}
-            {<video src = {"http://" + gameNodeInternal?.videoUrl} controls />}
+            <h1>{gameNode?.value}</h1>
+            {gameNode?.audioUrl && <audio src={mkUrl(gameNode.audioUrl)} controls />}
+            {gameNode?.imageUrl && <img src={mkUrl(gameNode.imageUrl)} alt={gameNode.imageUrl.substring(gameNode.imageUrl.lastIndexOf('/') + 1)} />}
+            {gameNode?.videoUrl && <video src={mkUrl(gameNode.videoUrl)} controls />}
         </div>
-    )
+    );
 }
+
