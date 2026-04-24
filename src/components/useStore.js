@@ -62,7 +62,7 @@ const useStore = create((set) => ({
         if (order.length === 0) return;
 
         const currentPos = order.findIndex((index) => index === state.currentNodeIndex);
-        const nextPos = currentPos < 0 ? 0 : Math.min(currentPos + 1, order.length - 1);
+        const nextPos = currentPos < 0 ? 0 : Math.min((currentPos + 1) % (order.length), order.length - 1);
         const nextIndex = order[nextPos];
         console.log('next index: ', nextIndex);
 

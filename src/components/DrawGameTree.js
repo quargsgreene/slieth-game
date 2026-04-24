@@ -14,6 +14,8 @@ export class DrawGameTree {
         this.yAxisSize = Math.min(100, this.domCanvas.height / 6);
         this.markedIndex = useStore.getState().currentNodeIndex;
         this.startPosition = {x: this.domCanvas.width / 2, y: this.domCanvas.height / 6};
+        this.treeStructure = tree;
+        console.log('tree to draw: ', this.treeStructure);
 
         this.drawNodes = tree.nodes.map((node, index) => new DrawGameNode(node.value, index));
         if (this.drawNodes.length > 0) {

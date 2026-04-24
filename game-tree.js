@@ -3,19 +3,15 @@
 class GameTree {
     constructor() {
         this.nodes = [];
+        this.root = null;
     }
 
     insertGameNode(node) {
-        if (!this.root) {
-            this.root = node;
-            this.nodes.push(node);
-            console.log('Inserted root node:', node);
-        } else {
-            this.nodes.push(node);
-            let index = this.nodes.length - 1;
-            this.minHeapifyGameTree(index);
-            console.log('Inserted node:', node, 'Current game tree:', this.nodes);
-        }
+        this.nodes.push(node);
+        const index = this.nodes.length - 1;
+        this.siftUp(index);
+        this.root = this.nodes[0] || null;
+        console.log('Inserted node:', node, 'Current game tree:', this.nodes);
     }
 
     getLeftChildIndex(index) {
@@ -31,38 +27,44 @@ class GameTree {
     }
 
     extractRootGameNode() {
-        let nodes = this.nodes;
+        const nodes = this.nodes;
 
         if (nodes.length === 0) {
             return null;
-        } else if (nodes.length === 1) {
-            return nodes.pop();
-        } else {
-            let rootNode = nodes[0];
-            nodes[0] = nodes.pop(); 
-            this.minHeapifyGameTree(0);
+        }
 
+        const rootNode = nodes[0];
+        if (nodes.length === 1) {
+            nodes.pop();
+            this.root = null;
             return rootNode;
         }
+
+        nodes[0] = nodes.pop();
+        this.siftDown(0);
+        this.root = nodes[0] || null;
+        return rootNode;
     }
 
     decreaseGameNodeValue(index, new_value) {
-        let nodes = this.nodes;
-        nodes[index] = new_value;
-        this.minHeapifyGameTree(index);
+        if (index < 0 || index >= this.nodes.length) return;
+        this.nodes[index].value = new_value;
+        this.siftUp(index);
+        this.root = this.nodes[0] || null;
     }
 
     deleteGameNode(index) {
-        let node = this.nodes[index];
-        this.decreaseGameNodeValue(index, -Infinity);
-        this.extractRootGameNode();
-        return node;
+        if (index < 0 || index >= this.nodes.length) return null;
+        const node = this.nodes[index];
+        this.decreaseGameNodeValue(index, Number.NEGATIVE_INFINITY);
+        return this.extractRootGameNode();
     }
 
     increaseGameNodeValue(index, new_value) {
-        let nodes = this.nodes;
-        nodes[index].value = new_value;
-        this.minHeapifyGameTree(index);
+        if (index < 0 || index >= this.nodes.length) return;
+        this.nodes[index].value = new_value;
+        this.siftDown(index);
+        this.root = this.nodes[0] || null;
     }
 
     searchGameNode(node) {
@@ -74,28 +76,41 @@ class GameTree {
         return -1;
     }
 
-    minHeapifyGameTree(index) {
-        console.log('Min-heapifying game tree at index:', index);
-        let nodes = this.nodes;
-        let numberOfNodes = nodes.length;
-        if (numberOfNodes === 1) {
-            return;
+    siftUp(index) {
+        const nodes = this.nodes;
+        while (index > 0) {
+            const parentIndex = this.getParentIndex(index);
+            if (nodes[parentIndex].value > nodes[index].value) {
+                [nodes[parentIndex], nodes[index]] = [nodes[index], nodes[parentIndex]];
+                index = parentIndex;
+            } else {
+                break;
+            }
         }
-        let leftChildIndex = this.getLeftChildIndex(index);
-        let rightChildIndex = this.getRightChildIndex(index);
-        let smallestIndex = index;
+    }
 
-        if (leftChildIndex < numberOfNodes && nodes[leftChildIndex].value < nodes[smallestIndex].value) {
-            smallestIndex = leftChildIndex;
-        }
+    siftDown(index) {
+        const nodes = this.nodes;
+        const length = nodes.length;
 
-        if (rightChildIndex < numberOfNodes && nodes[rightChildIndex].value < nodes[smallestIndex].value) {
-            smallestIndex = rightChildIndex;
-        }
+        while (true) {
+            const leftIndex = this.getLeftChildIndex(index);
+            const rightIndex = this.getRightChildIndex(index);
+            let smallest = index;
 
-        if (smallestIndex !== index) {
-            [nodes[index], nodes[smallestIndex]] = [nodes[smallestIndex], nodes[index]];
-            this.minHeapifyGameTree(smallestIndex);
+            if (leftIndex < length && nodes[leftIndex].value < nodes[smallest].value) {
+                smallest = leftIndex;
+            }
+            if (rightIndex < length && nodes[rightIndex].value < nodes[smallest].value) {
+                smallest = rightIndex;
+            }
+
+            if (smallest !== index) {
+                [nodes[index], nodes[smallest]] = [nodes[smallest], nodes[index]];
+                index = smallest;
+            } else {
+                break;
+            }
         }
     }
 }
