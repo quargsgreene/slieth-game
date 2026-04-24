@@ -1,7 +1,7 @@
 import GameTreeViewCanvas from "../components/GameTreeViewCanvas";
 export default function currentGameStatus() {
     return (
-        <div>
+        <div className="current-game-status">
             <GameTreeViewCanvas />
         </div>
     );

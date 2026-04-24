@@ -2,8 +2,9 @@ const LEFT_CHILD = 0;
 const RIGHT_CHILD = 1;
 
 export default class DrawGameNode {
-    constructor(value) {
+    constructor(value, index) {
         this.value = value;
+        this.index = index;
         this.pos = {x: 0, y: 0};
         this.parent = null;
         this.children = [];

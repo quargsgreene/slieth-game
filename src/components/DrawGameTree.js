@@ -1,38 +1,53 @@
 import DrawGameNode from "./DrawGameNode";
+import useStore from "./useStore";
 
 export class DrawGameTree {
-    // pass in binary min heap game tree
-        constructor(tree){
-            this.root = null;
-        
-            this.xAxisSize = 350;
-            this.yAxisSize = 80;
-            this.domCanvas = document.getElementById('game-tree-canvas');
-            this.ctx = this.domCanvas.getContext('2d');
-            this.startPosition = {x: this.domCanvas.width/2, y:this.domCanvas.height/2};
+    // pass in binary min heap game tree and a mounted canvas element
+    constructor(tree, canvas){
+        this.root = null;
+        this.domCanvas = canvas || document.getElementById('game-tree-canvas');
+        if (!this.domCanvas) {
+            throw new Error('Canvas element not available for DrawGameTree');
+        }
+        this.ctx = this.domCanvas.getContext('2d');
+        this.xAxisSize = Math.min(350, this.domCanvas.width / 2 - 60);
+        this.yAxisSize = Math.min(100, this.domCanvas.height / 6);
+        this.markedIndex = useStore.getState().currentNodeIndex;
+        this.startPosition = {x: this.domCanvas.width / 2, y: this.domCanvas.height / 6};
 
-            for(let node of tree.nodes) {
-                console.log('Inserting node into draw tree:', node);
-                this.addNode(node.value);
-            }
-
+        this.drawNodes = tree.nodes.map((node, index) => new DrawGameNode(node.value, index));
+        if (this.drawNodes.length > 0) {
+            this.root = this.drawNodes[0];
+            this.drawNodes.forEach((drawNode, index) => {
+                const leftIndex = 2 * index + 1;
+                const rightIndex = 2 * index + 2;
+                if (this.drawNodes[leftIndex]) drawNode.left = this.drawNodes[leftIndex];
+                if (this.drawNodes[rightIndex]) drawNode.right = this.drawNodes[rightIndex];
+            });
+            this.positionTree(this.root, this.startPosition, this.xAxisSize);
+        }
     }
 
-   getNodePosition ({x, y}, isLeft = false) { 
-        return {
-            x: isLeft ? x - this.xAxisSize + y : x + this.xAxisSize - y,
-            y: y + this.yAxisSize
-        };
+    positionTree(node, position, xOffset) {
+        node.pos = position;
+        const nextOffset = Math.max(40, xOffset / 1.8);
+        if (node.left) {
+            this.positionTree(node.left, { x: position.x - xOffset, y: position.y + this.yAxisSize }, nextOffset);
+        }
+        if (node.right) {
+            this.positionTree(node.right, { x: position.x + xOffset, y: position.y + this.yAxisSize }, nextOffset);
+        }
     }
 
     bfs () {
         const queue = [];
         const black = '#000000';
+        const currentNodeIndex = useStore.getState().currentNodeIndex;
         queue.push(this.root);
         while(queue.length !== 0) {
             const node = queue.shift();
             const {x, y} = node.pos;
-            const color = "#"+((1<<24)*Math.random()|0).toString(16);
+            const color = node.index === currentNodeIndex ? '#ff0000' : '#fcba03';
             this.ctx.fillStyle = color;
             this.ctx.beginPath();
             this.ctx.arc(x, y, 20, 0, 2 * Math.PI);
@@ -43,50 +58,44 @@ export class DrawGameTree {
             this.ctx.strokeText(node.value, x, y);
             console.log('Drawing node:', node.value, 'at position:', node.pos);
 
-            node.children.forEach(child => {
-                const {x: x1, y: y1} = child.pos;            
+            if (node.left) {
+                const {x: x1, y: y1} = node.left.pos;
                 this.ctx.beginPath();
-                this.ctx.moveTo(x, y + child.radius);
-                this.ctx.lineTo(x1, y1 - child.radius);
+                this.ctx.moveTo(x, y + node.left.radius);
+                this.ctx.lineTo(x1, y1 - node.left.radius);
                 this.ctx.stroke();
-                queue.push(child);
-            });
-        }
-    }
-
-    addNode (value) {
-        const newNode = new DrawGameNode(value);
-        if(this.root === null) {
-            newNode.pos = this.startPosition;
-            this.root = newNode;
-            console.log('Inserted root node to draw position 1:', newNode.pos);
-        } else {
-            let node = this.root;
-            while(node) {
-                if(node.value === value) {
-                    break;
-                }
-                if (value > node.value) {
-                    if(node.right) {
-                        node = node.right;
-                    } else {
-                        console.log('Inserting node with value at position 2:',node.pos);
-                        newNode.pos = this.getNodePosition(node.pos, false);
-                        node.right = newNode;
-                        break;
-                    }
-                } else {
-                    if(node.left) {
-                        node = node.left;
-                    } else {
-                        console.log('Inserting node with value at position 3:',node.pos);
-                        newNode.pos = this.getNodePosition(node.pos, true);
-                        node.left = newNode;
-                        break;
-                    }
-                }
+                queue.push(node.left);
+            }
+            if (node.right) {
+                const {x: x1, y: y1} = node.right.pos;
+                this.ctx.beginPath();
+                this.ctx.moveTo(x, y + node.right.radius);
+                this.ctx.lineTo(x1, y1 - node.right.radius);
+                this.ctx.stroke();
+                queue.push(node.right);
             }
         }
     }
 
-}
+    markCurrentNode(index, color) {
+        console.log('Marking current node with index:', index, 'and color:', color);
+        const queue = [];
+        queue.push(this.root);
+        while(queue.length !== 0) {
+            const node = queue.shift();
+            if(node.index === index) {
+                this.ctx.fillStyle = color;
+                this.ctx.beginPath();
+                this.ctx.arc(node.pos.x, node.pos.y, 20, 0, 2 * Math.PI);
+                this.ctx.fill();
+                this.ctx.strokeStyle = '#000000';
+                this.ctx.stroke();
+                this.ctx.strokeStyle = '#000000';
+                this.ctx.strokeText(node.value, node.pos.x, node.pos.y);
+                break;
+            }
+            if (node.left) queue.push(node.left);
+            if (node.right) queue.push(node.right);
+        }
+    }
+};

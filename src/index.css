@@ -27,9 +27,37 @@ a:hover {
 body {
   margin: 0;
   display: flex;
+  justify-content: center;
   place-items: center;
   min-width: 320px;
   min-height: 100vh;
+}
+
+.current-game-status {
+  width: 100%;
+  min-height: 100vh;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: 24px;
+  box-sizing: border-box;
+}
+
+.game-tree-container {
+  width: 100%;
+  max-width: 1240px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+#game-tree-canvas {
+  display: block;
+  max-width: 100%;
+  height: auto;
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  background: #111;
+  box-shadow: 0 0 24px rgba(0, 0, 0, 0.25);
 }
 
 h1 {
