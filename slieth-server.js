@@ -1,5 +1,6 @@
 import { connect } from 'mongoose'
 import gameNodesRouter from './game-nodes.js'
+import gameTreeRouter from './game-tree-routes.js'
 import express from 'express'
 import dotenv from 'dotenv/config.js'
 
@@ -19,10 +20,4 @@ connect(process.env.MONGO_URI)
   })
 
 // Mount all game node routes under /api
-app.use('/api', gameNodesRouter)
-
-
-
-
-
-
+app.use('/api', gameNodesRouter, gameTreeRouter)

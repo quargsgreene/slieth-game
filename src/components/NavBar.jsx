@@ -12,12 +12,12 @@ export default function NavBar() {
             <NavLink to="/help" className="nav-link">
                 Help
             </NavLink>
-            <NavLink to="/status" className="nav-link">
+            {/* <NavLink to="/status" className="nav-link">
                 Status
             </NavLink>
             <NavLink to="/start" className="nav-link">
                 Start
-            </NavLink>
+            </NavLink> */}
         </nav>
     );
 }

@@ -16,7 +16,7 @@ createRoot(document.getElementById('root')).render(
             <Route path="/about" element={<About />} />
             <Route path="/help" element={<Help />} />
             <Route path="/status" element={<CurrentGameStatus />} />
-            <Route path="/start" element={<GameNodeViewPage />} />
+            <Route path="/game" element={<GameNodeViewPage />} />
         </Routes>
     </BrowserRouter>
 )

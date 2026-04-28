@@ -67,8 +67,29 @@ const getGameNodeById = async (req, res) => {
         console.log(gameNode)
         res.status(200).json(gameNode)
     } catch (error) {
-        console.error('Error getting game node by id:', error)
+        console.error('Error getting game node by id: ', error)
         res.status(500).json({error: 'Failed to get game node by id'})
+    }
+}
+
+const getGameNode = async (req, res) => {
+    try {
+        const { imageUrl, audioUrl, videoUrl, value } = req.query;
+        const gameNode = await GameNode.findOne({ 
+            imageUrl: imageUrl, 
+            audioUrl: audioUrl,
+            videoUrl: videoUrl,
+            value: value
+        });
+
+        if(!gameNode){
+            return res.status(404).json({error: 'Node not found'});
+        }
+
+        res.json({id: gameNode._id})
+    } catch (error) {
+        console.error('Error finding game node: ', error);
+        res.status(500).json({error: error.message});
     }
 }
 
@@ -93,7 +114,7 @@ const deleteGameNode = async (req, res) => {
         res.status(200).json({ message: 'Game node deleted', deletedGameNode })
     } catch (error) {
         console.error('Error deleting game node:', error)
-        res.status(500).json({error: 'Failed to delete fame node'})
+        res.status(500).json({error: 'Failed to delete game node'})
     }
 }
 
@@ -108,4 +129,4 @@ const deleteAllGameNodes = async (req, res) => {
     }
 }
 
-export { createGameNode, getAllGameNodes, deleteGameNode, updateGameNode, getGameNodeById, replaceGameNode, deleteAllGameNodes }
+export { createGameNode, getAllGameNodes, deleteGameNode, updateGameNode, getGameNodeById, replaceGameNode, deleteAllGameNodes, getGameNode }

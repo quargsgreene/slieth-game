@@ -34,6 +34,20 @@ const traverseGameTree = (gameTree, callback, currentIndex = 0, traversalMode = 
     }
 };
 
+const getLeftChildIndex = (gameTree, index) => {
+    if (typeof gameTree?.getLeftChildIndex === 'function') {
+        return gameTree.getLeftChildIndex(index);
+    }
+    return 2 * index + 1;
+};
+
+const getRightChildIndex = (gameTree, index) => {
+    if (typeof gameTree?.getRightChildIndex === 'function') {
+        return gameTree.getRightChildIndex(index);
+    }
+    return 2 * index + 2;
+};
+
 const getTraversalOrder = (gameTree, traversalMode = 'inOrder') => {
     const order = [];
     const collector = (_, index) => order.push(index);
@@ -79,8 +93,8 @@ const inOrderTraversal = (gameTree, callback, nodeIndex = 0) => {
     const node = gameTree.nodes[nodeIndex];
     if (!node) return;
 
-    const leftChildIndex = gameTree.getLeftChildIndex(nodeIndex);
-    const rightChildIndex = gameTree.getRightChildIndex(nodeIndex);
+    const leftChildIndex = getLeftChildIndex(gameTree, nodeIndex);
+    const rightChildIndex = getRightChildIndex(gameTree, nodeIndex);
 
     inOrderTraversal(gameTree, callback, leftChildIndex);
     callback(node, nodeIndex);
@@ -92,8 +106,8 @@ const preOrderTraversal = (gameTree, callback, nodeIndex = 0) => {
     const node = gameTree.nodes[nodeIndex];
     if (!node) return;
 
-    const leftChildIndex = gameTree.getLeftChildIndex(nodeIndex);
-    const rightChildIndex = gameTree.getRightChildIndex(nodeIndex);
+    const leftChildIndex = getLeftChildIndex(gameTree, nodeIndex);
+    const rightChildIndex = getRightChildIndex(gameTree, nodeIndex);
 
     callback(node, nodeIndex);
     preOrderTraversal(gameTree, callback, leftChildIndex);
@@ -105,8 +119,8 @@ const postOrderTraversal = (gameTree, callback, nodeIndex = 0) => {
     const node = gameTree.nodes[nodeIndex];
     if (!node) return;
 
-    const leftChildIndex = gameTree.getLeftChildIndex(nodeIndex);
-    const rightChildIndex = gameTree.getRightChildIndex(nodeIndex);
+    const leftChildIndex = getLeftChildIndex(gameTree, nodeIndex);
+    const rightChildIndex = getRightChildIndex(gameTree, nodeIndex);
 
     postOrderTraversal(gameTree, callback, leftChildIndex);
     postOrderTraversal(gameTree, callback, rightChildIndex);
@@ -118,8 +132,8 @@ const reverseInOrderTraversal = (gameTree, callback, nodeIndex = 0) => {
     const node = gameTree.nodes[nodeIndex];
     if (!node) return;
 
-    const leftChildIndex = gameTree.getLeftChildIndex(nodeIndex);
-    const rightChildIndex = gameTree.getRightChildIndex(nodeIndex);
+    const leftChildIndex = getLeftChildIndex(gameTree, nodeIndex);
+    const rightChildIndex = getRightChildIndex(gameTree, nodeIndex);
 
     reverseInOrderTraversal(gameTree, callback, rightChildIndex);
     callback(node, nodeIndex);
@@ -131,8 +145,8 @@ const reversePreOrderTraversal = (gameTree, callback, nodeIndex = 0) => {
     const node = gameTree.nodes[nodeIndex];
     if (!node) return;
 
-    const leftChildIndex = gameTree.getLeftChildIndex(nodeIndex);
-    const rightChildIndex = gameTree.getRightChildIndex(nodeIndex);
+    const leftChildIndex = getLeftChildIndex(gameTree, nodeIndex);
+    const rightChildIndex = getRightChildIndex(gameTree, nodeIndex);
 
     callback(node, nodeIndex);
     reversePreOrderTraversal(gameTree, callback, rightChildIndex);
@@ -144,8 +158,8 @@ const reversePostOrderTraversal = (gameTree, callback, nodeIndex = 0) => {
     const node = gameTree.nodes[nodeIndex];
     if (!node) return;
 
-    const leftChildIndex = gameTree.getLeftChildIndex(nodeIndex);
-    const rightChildIndex = gameTree.getRightChildIndex(nodeIndex);
+    const leftChildIndex = getLeftChildIndex(gameTree, nodeIndex);
+    const rightChildIndex = getRightChildIndex(gameTree, nodeIndex);
 
     reversePostOrderTraversal(gameTree, callback, rightChildIndex);
     reversePostOrderTraversal(gameTree, callback, leftChildIndex);
@@ -157,8 +171,8 @@ const dfsTraversal = (gameTree, callback, nodeIndex = 0) => {
     const node = gameTree.nodes[nodeIndex];
     if (!node) return;
 
-    const leftChildIndex = gameTree.getLeftChildIndex(nodeIndex);
-    const rightChildIndex = gameTree.getRightChildIndex(nodeIndex);
+    const leftChildIndex = getLeftChildIndex(gameTree, nodeIndex);
+    const rightChildIndex = getRightChildIndex(gameTree, nodeIndex);
 
     callback(node, nodeIndex);
     dfsTraversal(gameTree, callback, leftChildIndex);
@@ -180,8 +194,8 @@ const bfsTraversal = (gameTree, callback) => {
 
         callback(node, nodeIndex);
 
-        const leftChildIndex = gameTree.getLeftChildIndex(nodeIndex);
-        const rightChildIndex = gameTree.getRightChildIndex(nodeIndex);
+        const leftChildIndex = getLeftChildIndex(gameTree, nodeIndex);
+        const rightChildIndex = getRightChildIndex(gameTree, nodeIndex);
 
         if (gameTree.nodes[leftChildIndex] !== null && gameTree.nodes[leftChildIndex] !== undefined) {
             queue.push(leftChildIndex);

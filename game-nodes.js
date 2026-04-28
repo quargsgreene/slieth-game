@@ -1,13 +1,15 @@
 // routes
 
 import express from 'express';
-import { deleteGameNode, createGameNode, getAllGameNodes, updateGameNode, deleteAllGameNodes, getGameNodeById, replaceGameNode } from './slieth-controller.js';
+import { deleteGameNode, createGameNode, getAllGameNodes, updateGameNode, deleteAllGameNodes, getGameNodeById, replaceGameNode, getGameNode } from './slieth-controller.js';
 
 const router = express.Router()
 
 router.get('/gameNodes', getAllGameNodes)
 
 router.get('/gameNode/:gameNodeId', getGameNodeById)
+
+router.get('/gameNode', getGameNode)
 
 router.post('/addGameNode', createGameNode)
 

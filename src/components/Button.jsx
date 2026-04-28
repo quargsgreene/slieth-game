@@ -1,5 +1,7 @@
-export default function Button({ onClick, label, id }) {
+export default function Button({ onClick, label, id, disabled = false, type = "button" }) {
     return (
-        <button id={id} onClick = {onClick}>{label}</button>
+        <button id={id} type={type} onClick={onClick} disabled={disabled}>
+            {label}
+        </button>
     )
 }

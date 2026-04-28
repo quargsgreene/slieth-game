@@ -1,5 +1,5 @@
-import fetchDefaultGameNodes from "./fetchDefaultGameNodes";
-import { GameNodeInternal } from "./GameNodeInternal";
+import fetchDefaultGameNodes from "./fetchDefaultGameNodes.js";
+import { GameNodeInternal } from "./GameNodeInternal.js";
 
 const hydrateGameNode = async () => {
     try {

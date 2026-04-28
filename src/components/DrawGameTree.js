@@ -1,5 +1,5 @@
-import DrawGameNode from "./DrawGameNode";
-import useStore from "./useStore";
+import DrawGameNode from "./DrawGameNode.js";
+import useStore from "./useStore.js";
 
 export class DrawGameTree {
     // pass in binary min heap game tree and a mounted canvas element
