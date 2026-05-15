@@ -24,8 +24,15 @@ const useStore = create(
             win: false,
             sequelae: 0,
             carrots: 0,
+            score: 0,
             traversalMode: 'inOrder', // Default traversal mode
             currentNodeIndex: 0,
+            subGameStates: {},
+            saveSubGameState: (nodeId, state) => {
+                if (!nodeId) return;
+                set((s) => ({ subGameStates: { ...s.subGameStates, [nodeId]: state } }));
+            },
+            clearSubGameStates: () => set({ subGameStates: {} }),
             toggleInProgress: () => set((state) => ({inProgress: !state.inProgress})),
             toggleIsLoading: () => set((state) => ({isLoading: !state.isLoading})),
             setError: (error) => set({error: error}),
@@ -34,8 +41,9 @@ const useStore = create(
                 set({ hasSavedGame: !!savedGameId });
             },
             updateCurrentNodeIndex: (index) => set({ currentNodeIndex: index }),
-            incrementSequelae: () => set((state) => ({ sequelae: state.sequelae + 1 })),
-            incrementCarrots: () => set((state) => ({ carrots: state.carrots + 1 })),
+            updateSequelae: (amount) => set((state) => ({ sequelae: state.sequelae + amount })),
+            updateCarrots: (amount) => set((state) => ({ carrots: state.carrots + amount })),
+            updateScore: (amount) => set((state) => ({ score: state.score + amount })),
             decrementSequelae: () => set((state) => ({ sequelae: state.sequelae - 1 })),
             decrementCarrots: () => set((state) => ({ carrots: state.carrots - 1 })),
             winGame: () => set({ win: true, lose: false }),
@@ -66,6 +74,7 @@ const useStore = create(
                         hasSavedGame: !!gameId,
                         isLoading: false,
                         isStarting: false,
+                        subGameStates: {},
                     });
                     console.log("Game tree set in store: ", gameTree);
                     return true;
@@ -198,6 +207,7 @@ const useStore = create(
                 carrots: state.carrots,
                 traversalMode: state.traversalMode,
                 currentNodeIndex: state.currentNodeIndex,
+                subGameStates: state.subGameStates,
             }),
         }
     )

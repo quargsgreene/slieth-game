@@ -1,22 +1,30 @@
+import useStore from '../components/useStore';
+import calculateScore from './score';
+import { changeTraversalMode } from './changeTraversalMode';
+
 class CountAndFeelChars {
-    constructor(maxRounds, minChars, maxChars, asciiRange) {
+    constructor(maxRounds=5, minChars=5, maxChars=20, asciiRange={min: 33, max: 126}) {
         this.maxRounds = maxRounds;
         this.minChars = minChars;
         this.maxChars = maxChars;
         this.asciiRange = asciiRange;
-        this.chars = this.generateRandomChars();
+        this.chars = [];
         this.targetChar = this.chooseTargetChar();
-        this.round = 0;
+        this.round = 1;
         this.sequelae = 0;
         this.carrots = 0;
         this.guessError = 0;
         this.feelingError = 0;
-        this.guess = null;
-        this.feeling = '';
+        this.guesses = [];
+        this.feelings = [];
         this.targetCharCount = 0;
         this.targetChar = null;
         this.wins = 0;
         this.losses = 0;
+        this.gameOver = false;
+
+        this.generateRandomChars();
+        this.chooseTargetChar();
     }
 
     generateRandomChars() {
@@ -38,14 +46,25 @@ class CountAndFeelChars {
         return count;
     }
 
-    evaluateTargetCharCountGuess(guess) {
+    evaluateTargetCharCountGuess(guess=9000) {
+        if(typeof guess !== 'number' || isNaN(Number(guess)) || guess < 0) {
+            if(typeof guess === 'string' && guess.trim() !== '' && !isNaN(Number(guess))) {
+                guess = guess.charCodeAt(Math.floor(Math.random() * guess.length)); 
+            } else if ( Number(guess) < 0){
+                guess = 10;
+            } else {
+                guess = 9001; // default high guess for invalid input
+            }
+        }
         this.targetCharCount = this.countChars(this.targetChar);
         this.guessError = Math.abs(guess - this.targetCharCount);
+
         return this.guessError;
     }
 
-    evaluateCharCountFeeling(feeling) {
+    evaluateCharCountFeeling(feeling='meh') {
         let targetCharCountInFeeling = 0;
+   
         for (const char of feeling) {
             if (char === this.targetChar) {
                 targetCharCountInFeeling++;
@@ -56,19 +75,18 @@ class CountAndFeelChars {
     }
 
     calculateSequelae() {
-        this.sequelae = Math.cbrt(this.guessError + this.feelingError) * 100 + this.losses;
+        this.sequelae += Math.round(Math.cbrt(Math.abs(this.guessError - this.feelingError)) * 100 + 2 * this.losses);
         return this.sequelae;
     }
 
     calculateCarrots() {
-        this.carrots = Math.cbrt(this.guessError + this.feelingError) * 100 + this.wins;
+        this.carrots += Math.round((Math.cbrt(this.guessError + this.feelingError) * 100 + Math.PI * this.wins));
         return this.carrots;
     }
 
-    resetGame() {
-        this.round = 0;
-        this.guess = null;
-        this.feeling = '';
+    resetGame(guess=9000, feeling='meh') {
+        this.guesses.push(guess);
+        this.feelings.push(feeling);
         this.targetCharCount = 0;
         this.targetChar = null;
         this.chars = [];
@@ -77,19 +95,16 @@ class CountAndFeelChars {
         this.feelingError = 0;
     }
 
-    nextRound() {
+    nextRound(guess, feeling) {
+        this.resetGame(guess, feeling);
         if (this.round >= this.maxRounds) {
+            this.gameOver = true;
             return;
         }
-        this.resetGame();
+        this.round++;
         this.generateRandomChars();
         this.chooseTargetChar();
-        this.round++;
         return this.round;
-    }
-
-    endGame() {
-        return this.round >= this.maxRounds;
     }
 
     winGame() {
@@ -102,20 +117,70 @@ class CountAndFeelChars {
         return this.losses;
     }
 
-    playRound() {
-        this.nextRound();
-        this.evaluateTargetCharCountGuess(this.guess);
-        this.evaluateCharCountFeeling(this.feeling);
+    playRound(feeling='meh', guess=9000) {      
+        const guessError = this.evaluateTargetCharCountGuess(guess);
+        const feelingError = this.evaluateCharCountFeeling(feeling);
+        if (guessError > 0) {
+            this.loseGame();
+        } else {
+            this.winGame();
+        }
         this.calculateSequelae();
         this.calculateCarrots();
-        return this.sequelae, this.carrots;
+        this.nextRound(guess, feeling);
+        return { sequelae: this.sequelae, carrots: this.carrots, gameOver: this.gameOver };
     }
 
     playGame() {
-        while (!this.endGame()) {
+        const store = useStore.getState();
+        const sequelae = store.sequelae;
+        const carrots = store.carrots;
+        while (!this.gameOver) {
             this.playRound();
         }
+        // update global state with final results after the loop ends
+        store.updateSubGameState({ sequelae: this.sequelae, carrots: this.carrots });
+        const scoreChange = calculateScore(this.sequelae, this.carrots, store.traversalMode, store.currentNodeIndex, store.gameTree.nodes);
+        store.updateScore(scoreChange);
+        store.updateSequelae(this.sequelae);
+        store.updateCarrots(this.carrots);
+        store.updateScore(scoreChange);
+        
+        if(this.wins > this.losses) {
+            changeTraversalMode(store.traversalMode, 'win');
+        } else if (this.losses > this.wins) {
+            changeTraversalMode(store.traversalMode, 'lose');
+        }
+
         return {resultingSequelae: this.sequelae, resultingCarrots: this.carrots};
+    }
+
+    serialize() {
+        return {
+            maxRounds: this.maxRounds,
+            minChars: this.minChars,
+            maxChars: this.maxChars,
+            asciiRange: this.asciiRange,
+            chars: this.chars,
+            targetChar: this.targetChar,
+            round: this.round,
+            sequelae: this.sequelae,
+            carrots: this.carrots,
+            guessError: this.guessError,
+            feelingError: this.feelingError,
+            guesses: this.guesses,
+            feelings: this.feelings,
+            targetCharCount: this.targetCharCount,
+            wins: this.wins,
+            losses: this.losses,
+            gameOver: this.gameOver,
+        };
+    }
+
+    static restore(data) {
+        const game = new CountAndFeelChars(data.maxRounds, data.minChars, data.maxChars, data.asciiRange);
+        Object.assign(game, data);
+        return game;
     }
 
 }

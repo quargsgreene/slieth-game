@@ -1,6 +1,7 @@
 import Button from './Button';
 import useStore from './useStore';
 import currentGameStatus from '../pages/CurrentGameStatus';
+import CountAndFeelCharsUI from '../components/games/CountAndFeelCharsUI';
 import { useEffect } from 'react';
 import { useNavigate } from "react-router";
 
@@ -29,9 +30,10 @@ export default function GameNodeView() {
             <h1>{gameTree?.nodes?.[currentNodeIndex]?.value}</h1>
             <Button id="next-node" label="Next Node" onClick={advanceTraversal} />
             <Button id="status" label="Status" onClick={viewGameStatus} />
-            {gameTree?.nodes?.[currentNodeIndex]?.audioUrl && <audio src={mkUrl(gameTree.nodes[currentNodeIndex].audioUrl)} controls />}
-            {gameTree?.nodes?.[currentNodeIndex]?.imageUrl && <img src={mkUrl(gameTree.nodes[currentNodeIndex].imageUrl)} alt={gameTree.nodes[currentNodeIndex].imageUrl.substring(gameTree.nodes[currentNodeIndex].imageUrl.lastIndexOf('/') + 1)} />}
-            {gameTree?.nodes?.[currentNodeIndex]?.videoUrl && <video src={mkUrl(gameTree.nodes[currentNodeIndex].videoUrl)} controls />}
+            {gameTree?.nodes?.[currentNodeIndex]?.audioUrl && <audio id="game-audio" src={mkUrl(gameTree.nodes[currentNodeIndex].audioUrl)} controls />}
+            {gameTree?.nodes?.[currentNodeIndex]?.imageUrl && <img id="game-image" src={mkUrl(gameTree.nodes[currentNodeIndex].imageUrl)} alt={gameTree.nodes[currentNodeIndex].imageUrl.substring(gameTree.nodes[currentNodeIndex].imageUrl.lastIndexOf('/') + 1)} />}
+            {gameTree?.nodes?.[currentNodeIndex]?.videoUrl && <video id="game-video" src={mkUrl(gameTree.nodes[currentNodeIndex].videoUrl)} controls />}
+            <CountAndFeelCharsUI key={gameTree?.nodes?.[currentNodeIndex]?._id} />
         </div>
     );
 }

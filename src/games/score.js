@@ -1,9 +1,9 @@
-const calculateScore = (sequelae, carrots, traversalMode, currentNodeIndex = 0, nodes) => {
+const calculateScore = (sequelae, carrots, traversalMode='inOrder', currentNodeIndex = 0, nodes) => {
     const traversalNumber = calculateTraversalNumber(traversalMode);
     const nodeMean = calculateNodeMean(nodes);
     const score = ((sequelae * traversalNumber) / (carrots * currentNodeIndex)) ** nodeMean;
-    const scorePerNode = score / (traversalMode.length * currentNodeIndex);
-    return scorePerNode;
+    const globalScoreChangePerNode = score / (traversalMode.length * currentNodeIndex);
+    return globalScoreChangePerNode;
 }
 
 const calculateTraversalNumber = (traversalMode) => {
