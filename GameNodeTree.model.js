@@ -43,6 +43,11 @@ const gameNodeTreeSchema = new Schema({
         type: Number,
         required: true
     },
+    score: {
+        type: Number,
+        required: false,
+        default: 0
+    },
     traversalMode: {
         type: String,
         required: true
@@ -50,7 +55,12 @@ const gameNodeTreeSchema = new Schema({
     currentNodeIndex: {
         type: Number,
         required: true
+    },
+    subGameStates: {
+        type: Schema.Types.Mixed,
+        required: false,
+        default: {}
     }
-}, {timestamps: true});
+}, {timestamps: true, minimize: false});
 
 export default model('GameNodeTrees', gameNodeTreeSchema);

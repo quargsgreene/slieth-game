@@ -1,6 +1,5 @@
 import useStore from '../components/useStore';
 import calculateScore from './score';
-import { changeTraversalMode } from './changeTraversalMode';
 
 class CountAndFeelChars {
     constructor(maxRounds=5, minChars=5, maxChars=20, asciiRange={min: 33, max: 126}) {
@@ -117,7 +116,12 @@ class CountAndFeelChars {
         return this.losses;
     }
 
-    playRound(feeling='meh', guess=9000) {      
+    playRound(feeling='meh', guess=9000) {
+        if (this.gameOver) {
+            return { sequelae: this.sequelae, carrots: this.carrots, gameOver: true };
+        }
+        const prevSequelae = this.sequelae;
+        const prevCarrots = this.carrots;
         const guessError = this.evaluateTargetCharCountGuess(guess);
         const feelingError = this.evaluateCharCountFeeling(feeling);
         if (guessError > 0) {
@@ -128,31 +132,22 @@ class CountAndFeelChars {
         this.calculateSequelae();
         this.calculateCarrots();
         this.nextRound(guess, feeling);
+
+        const store = useStore.getState();
+        const sequelaeDelta = this.sequelae - prevSequelae;
+        const carrotsDelta = this.carrots - prevCarrots;
+        const rawScore = calculateScore(this.sequelae, this.carrots, store.traversalMode, store.currentNodeIndex, store.gameTree?.nodes ?? []);
+        const scoreDelta = Number.isFinite(rawScore) ? rawScore : 0;
+        store.applyRoundResults({ sequelaeDelta, carrotsDelta, scoreDelta });
+
         return { sequelae: this.sequelae, carrots: this.carrots, gameOver: this.gameOver };
     }
 
     playGame() {
-        const store = useStore.getState();
-        const sequelae = store.sequelae;
-        const carrots = store.carrots;
         while (!this.gameOver) {
             this.playRound();
         }
-        // update global state with final results after the loop ends
-        store.updateSubGameState({ sequelae: this.sequelae, carrots: this.carrots });
-        const scoreChange = calculateScore(this.sequelae, this.carrots, store.traversalMode, store.currentNodeIndex, store.gameTree.nodes);
-        store.updateScore(scoreChange);
-        store.updateSequelae(this.sequelae);
-        store.updateCarrots(this.carrots);
-        store.updateScore(scoreChange);
-        
-        if(this.wins > this.losses) {
-            changeTraversalMode(store.traversalMode, 'win');
-        } else if (this.losses > this.wins) {
-            changeTraversalMode(store.traversalMode, 'lose');
-        }
-
-        return {resultingSequelae: this.sequelae, resultingCarrots: this.carrots};
+        return { resultingSequelae: this.sequelae, resultingCarrots: this.carrots };
     }
 
     serialize() {

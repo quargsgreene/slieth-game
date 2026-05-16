@@ -10,8 +10,10 @@ const createNewGameTree = async (req, res) => {
         win,
         sequelae,
         carrots,
+        score,
         traversalMode,
         currentNodeIndex,
+        subGameStates,
         gameId
    } = req.body;
 
@@ -24,8 +26,10 @@ const createNewGameTree = async (req, res) => {
             win,
             sequelae,
             carrots,
+            score: typeof score === 'number' ? score : 0,
             traversalMode,
-            currentNodeIndex
+            currentNodeIndex,
+            subGameStates: subGameStates && typeof subGameStates === 'object' ? subGameStates : {}
         };
 
         if (gameId) {
@@ -86,20 +90,24 @@ const getGameTreeByGameId = async (req, res) => {
 
 const updateGameTreeState = async (req, res) => {
     const gameTreeId = req.params.gameTreeId;
+    console.log(`PATCH /updateGameTreeState/${gameTreeId} body keys:`, Object.keys(req.body || {}));
     if (!mongoose.Types.ObjectId.isValid(gameTreeId)) {
+        console.warn(`Invalid game tree id: ${gameTreeId}`);
         return res.status(400).json({ error: 'Invalid game tree id' });
     }
 
     const updateFields = {};
     const allowedFields = [
         'nodes',
-        // 'currentNode',
+        'inProgress',
         'lose',
         'win',
         'sequelae',
         'carrots',
+        'score',
         'traversalMode',
-        'currentNodeIndex'
+        'currentNodeIndex',
+        'subGameStates'
     ];
 
     allowedFields.forEach((field) => {
@@ -135,12 +143,16 @@ const updateGameTreeState = async (req, res) => {
 
 const abortGame = async (req, res) => {
     const gameTreeId = req.params.gameTreeId
+    console.log(`DELETE /abortGame/${gameTreeId}`);
+    if (!mongoose.Types.ObjectId.isValid(gameTreeId)) {
+        return res.status(400).json({ error: 'Invalid game tree id' });
+    }
     try {
         const deletedGameTree = await GameNodeTree.findOneAndDelete({ _id: gameTreeId })
-        if(!deletedGameTree || !mongoose.Types.ObjectId.isValid(gameTreeId)){
+        if(!deletedGameTree){
             return res.status(404).json({error: 'Game Tree not found'})
         }
-        console.log(deletedGameTree)
+        console.log('Game tree deleted: ', deletedGameTree._id)
         res.status(200).json({ message: 'Game tree deleted', deletedGameTree })
     } catch (error) {
         console.error('Error deleting game tree:', error)

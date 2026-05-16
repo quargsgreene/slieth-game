@@ -2,12 +2,13 @@ import GameNode from './GameNode.model.js'
 import mongoose from 'mongoose'
 
 const createGameNode = async (req, res) => {
-    const { imageUrl, audioUrl, videoUrl, value } = req.body
+    const { imageUrl, audioUrl, videoUrl, text, value } = req.body
     try {
         const newGameNode = new GameNode({
             imageUrl,
             audioUrl,
             videoUrl,
+            text,
             value
         })
         const savedGameNode = await newGameNode.save()
@@ -21,13 +22,16 @@ const createGameNode = async (req, res) => {
 
 const updateGameNode = async (req, res) => {
     const gameNodeId = req.params.gameNodeId
-    const { value } = req.body
+    const updateFields = {};
+    ['imageUrl', 'audioUrl', 'videoUrl', 'text', 'value'].forEach((field) => {
+        if (req.body[field] !== undefined) {
+            updateFields[field] = req.body[field];
+        }
+    });
     try {
         const updatedGameNode = await GameNode.findOneAndUpdate(
             { _id: gameNodeId },
-            {
-                value: value
-            },
+            updateFields,
             { returnDocument: 'after' }
         )
         if(!updatedGameNode || !mongoose.Types.ObjectId.isValid(gameNodeId)){
@@ -43,9 +47,9 @@ const updateGameNode = async (req, res) => {
 
 const replaceGameNode = async (req, res) => {
     const gameNodeId = req.params.gameNodeId
-    const { imageUrl, audioUrl, videoUrl, value } = req.body
+    const { imageUrl, audioUrl, videoUrl, text, value } = req.body
     try {
-        const replacedGameNode = await GameNode.findOneAndReplace({ _id: gameNodeId }, { imageUrl, audioUrl, videoUrl, value })
+        const replacedGameNode = await GameNode.findOneAndReplace({ _id: gameNodeId }, { imageUrl, audioUrl, videoUrl, text, value })
         if(!replacedGameNode || !mongoose.Types.ObjectId.isValid(gameNodeId)){
             return res.status(404).json({error: 'Game node not found'})
         }
@@ -74,11 +78,12 @@ const getGameNodeById = async (req, res) => {
 
 const getGameNode = async (req, res) => {
     try {
-        const { imageUrl, audioUrl, videoUrl, value } = req.query;
-        const gameNode = await GameNode.findOne({ 
-            imageUrl: imageUrl, 
+        const { imageUrl, audioUrl, videoUrl, text, value } = req.query;
+        const gameNode = await GameNode.findOne({
+            imageUrl: imageUrl,
             audioUrl: audioUrl,
             videoUrl: videoUrl,
+            text: text,
             value: value
         });
 

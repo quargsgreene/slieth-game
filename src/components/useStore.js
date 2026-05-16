@@ -28,11 +28,57 @@ const useStore = create(
             traversalMode: 'inOrder', // Default traversal mode
             currentNodeIndex: 0,
             subGameStates: {},
-            saveSubGameState: (nodeId, state) => {
-                if (!nodeId) return;
-                set((s) => ({ subGameStates: { ...s.subGameStates, [nodeId]: state } }));
+            persistGameTreeState: async () => {
+                const state = get();
+                const gameTreeId = state.gameTreeId;
+                if (!gameTreeId) {
+                    console.warn('persistGameTreeState skipped: no gameTreeId');
+                    return;
+                }
+                try {
+                    const response = await fetch(`/api/updateGameTreeState/${encodeURIComponent(gameTreeId)}`, {
+                        method: 'PATCH',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify({
+                            inProgress: state.inProgress,
+                            lose: state.lose,
+                            win: state.win,
+                            sequelae: state.sequelae,
+                            carrots: state.carrots,
+                            score: state.score,
+                            traversalMode: state.traversalMode,
+                            currentNodeIndex: state.currentNodeIndex,
+                            subGameStates: state.subGameStates,
+                        }),
+                    });
+                    if (!response.ok) {
+                        const body = await response.text().catch(() => '');
+                        console.error(`persistGameTreeState failed: ${response.status} ${body}`);
+                    }
+                } catch (error) {
+                    console.error('Error persisting game tree state:', error);
+                }
             },
-            clearSubGameStates: () => set({ subGameStates: {} }),
+            saveSubGameState: (nodeId, subGameState) => {
+                if (!nodeId) return;
+                set((s) => ({ subGameStates: { ...s.subGameStates, [nodeId]: subGameState } }));
+                get().persistGameTreeState();
+            },
+            clearSubGameStates: () => {
+                set({ subGameStates: {} });
+                get().persistGameTreeState();
+            },
+            applyRoundResults: ({ sequelaeDelta = 0, carrotsDelta = 0, scoreDelta = 0 } = {}) => {
+                set((state) => {
+                    const nextScore = state.score + scoreDelta;
+                    return {
+                        sequelae: state.sequelae + sequelaeDelta,
+                        carrots: state.carrots + carrotsDelta,
+                        score: Number.isFinite(nextScore) ? nextScore : state.score,
+                    };
+                });
+                get().persistGameTreeState();
+            },
             toggleInProgress: () => set((state) => ({inProgress: !state.inProgress})),
             toggleIsLoading: () => set((state) => ({isLoading: !state.isLoading})),
             setError: (error) => set({error: error}),
@@ -43,7 +89,10 @@ const useStore = create(
             updateCurrentNodeIndex: (index) => set({ currentNodeIndex: index }),
             updateSequelae: (amount) => set((state) => ({ sequelae: state.sequelae + amount })),
             updateCarrots: (amount) => set((state) => ({ carrots: state.carrots + amount })),
-            updateScore: (amount) => set((state) => ({ score: state.score + amount })),
+            updateScore: (amount) => set((state) => {
+                const next = state.score + amount;
+                return { score: Number.isFinite(next) ? next : state.score };
+            }),
             decrementSequelae: () => set((state) => ({ sequelae: state.sequelae - 1 })),
             decrementCarrots: () => set((state) => ({ carrots: state.carrots - 1 })),
             winGame: () => set({ win: true, lose: false }),
@@ -74,6 +123,12 @@ const useStore = create(
                         hasSavedGame: !!gameId,
                         isLoading: false,
                         isStarting: false,
+                        inProgress: true,
+                        lose: false,
+                        win: false,
+                        sequelae: 0,
+                        carrots: 0,
+                        score: 0,
                         subGameStates: {},
                     });
                     console.log("Game tree set in store: ", gameTree);
@@ -119,6 +174,9 @@ const useStore = create(
                         win: gameTree.win,
                         sequelae: gameTree.sequelae,
                         carrots: gameTree.carrots,
+                        score: gameTree.score ?? 0,
+                        subGameStates: gameTree.subGameStates ?? {},
+                        inProgress: gameTree.inProgress ?? true,
                         hasSavedGame: true,
                         isLoading: false,
                     });
@@ -144,6 +202,47 @@ const useStore = create(
                     return await get().loadGameTreeByGameId(gameId);
                 } finally {
                     set({ isResuming: false, hasSavedGame: !!localStorage.getItem('sliethGameId') });
+                }
+            },
+            endGame: async () => {
+                const gameTreeId = get().gameTreeId;
+                if (!gameTreeId) {
+                    set({ error: 'No game tree id found to end game' });
+                    return false;
+                }
+
+                try {
+                    const response = await fetch(`/api/abortGame/${encodeURIComponent(gameTreeId)}`, {
+                        method: 'DELETE',
+                    });
+                    if (!response.ok && response.status !== 404) {
+                        const body = await response.text().catch(() => '');
+                        console.error(`endGame failed: ${response.status} ${body}`);
+                        set({ error: 'Failed to end game' });
+                        return false;
+                    }
+                    localStorage.removeItem('sliethGameId');
+                    set({
+                        hasSavedGame: false,
+                        inProgress: false,
+                        gameTree: { nodes: [] },
+                        gameId: null,
+                        gameTreeId: null,
+                        root: null,
+                        gameTreeDisplayObj: null,
+                        currentNodeIndex: 0,
+                        lose: false,
+                        win: false,
+                        sequelae: 0,
+                        carrots: 0,
+                        score: 0,
+                        subGameStates: {},
+                    });
+                    return true;
+                } catch (error) {
+                    console.error('Error ending game:', error);
+                    set({ error: error.message });
+                    return false;
                 }
             },
             setGameTreeDisplayObj: async (canvas) => {
@@ -197,14 +296,11 @@ const useStore = create(
                 gameId: state.gameId,
                 gameTreeId: state.gameTreeId,
                 root: state.root,
-                isLoading: state.isLoading,
-                error: state.error,
-                isStarting: state.isStarting,
-                isResuming: state.isResuming,
                 lose: state.lose,
                 win: state.win,
                 sequelae: state.sequelae,
                 carrots: state.carrots,
+                score: state.score,
                 traversalMode: state.traversalMode,
                 currentNodeIndex: state.currentNodeIndex,
                 subGameStates: state.subGameStates,

@@ -22,19 +22,21 @@ const insertNodesIntoGameTree = async () => {
         const lose = useStore.getState().lose;
         const win = useStore.getState().win;
         const sequelae = useStore.getState().sequelae;
-        const carrots = useStore.getState().carrots
+        const carrots = useStore.getState().carrots;
+        const score = useStore.getState().score;
 
         const gameToStart = {
             inProgress: true,
             nodes: initialNodeIds,
             root: initialRootId,
-            // currentNode: initialNodeId, 
             lose: lose,
             win: win,
             sequelae: sequelae,
-            carrots: carrots, 
+            carrots: carrots,
+            score: score,
             traversalMode: traversalMode,
             currentNodeIndex: initialIndex,
+            subGameStates: {},
         };
         const game = await createNewGameTree(url, gameToStart);
         const persistedId = game.gameId || game._id;

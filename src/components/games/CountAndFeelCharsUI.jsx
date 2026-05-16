@@ -1,9 +1,11 @@
 import CountAndFeelChars from "../../games/CountAndFeelChars";
 import generateGameParams from "../../games/generateGameParams";
+import enforceGlobalGameOutcome from "../../games/enforceGlobalGameOutcome";
 import Button from "../Button";
 import FormField from '../FormField';
 import useStore from '../useStore';
-import { useState, useReducer, useRef, useCallback, act } from 'react';
+import { useNavigate } from "react-router";
+import { useState, useReducer, useRef, useCallback, useEffect } from 'react';
 
 const reducer = (state, action) => {
     switch(action.type) {
@@ -30,6 +32,7 @@ const reducer = (state, action) => {
 }
 
 export default function CountAndFeelCharsUI(){
+    const navigate = useNavigate();
     const [input, setInput] = useState({guess: '', feeling: ''});
 
     const nodeId = useStore((s) => s.gameTree?.nodes?.[s.currentNodeIndex]?._id);
@@ -82,7 +85,23 @@ export default function CountAndFeelCharsUI(){
         saveSubGameState(nodeId, currentGame.serialize());
     }, [currentGame, input, nodeId, saveSubGameState]);
 
+
     const isGameOver = gameState.gameOver || currentGame.gameOver;
+
+    useEffect(() => {
+        if (!isGameOver) return;
+        dispatchGameState({type: 'game_over'});
+        saveSubGameState(nodeId, currentGame.serialize());
+
+        const globalOutcome = enforceGlobalGameOutcome(useStore.getState());
+        if (globalOutcome === "win") {
+            navigate('/win');
+            useStore.getState().endGame();
+        } else if (globalOutcome === "lose") {
+            navigate('/lose');
+            useStore.getState().endGame();
+        }
+    }, [isGameOver, nodeId, currentGame, saveSubGameState, navigate]);
 
     return (
         <div id="count-and-feel-chars-ui">

@@ -20,6 +20,16 @@ export default function GameNodeView() {
         navigate('/status');
     }
 
+    const loseGame = () => {
+        useStore.getState().loseGame();
+        navigate('/lose');
+    }
+
+    const winGame = () => {
+        useStore.getState().winGame();
+        navigate('/win');
+    }
+
     useEffect(() => {
         if (!gameTreeDisplayObj || !gameTree?.nodes?.[currentNodeIndex]) return;
         gameTreeDisplayObj.markCurrentNode(currentNodeIndex, '#ff0000');

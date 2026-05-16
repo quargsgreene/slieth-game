@@ -13,6 +13,10 @@ const gameNodeSchema = new Schema({
         type: String,
         required: false
     },
+    text: {
+        type: String,
+        required: false
+    },
     value: {
         type: Number,
         required: true
